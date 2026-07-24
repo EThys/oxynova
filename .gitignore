@@ -1,0 +1,33 @@
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+temp.zip
+docx_extract/
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Uploaded media (kept locally / on server)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Local scripts scratch
+scripts/process-logo.py
