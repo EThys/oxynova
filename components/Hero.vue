@@ -1,22 +1,29 @@
 <template>
   <div class="relative min-h-[75vh] sm:min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-x-hidden bg-brand-900 font-sans">
-    <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 z-0 bg-brand-900">
       <img
-        src="/images/one.jpg"
+        src="/images/about-one.jpg"
         alt="Centrale oxygène médical PSA — OXYNOVA RDC SARL"
-        class="w-full h-full object-cover opacity-55"
-      />
-      <div class="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-brand-900/95 via-brand-900/75 sm:via-brand-900/65 to-brand-800/50" />
+        width="1600"
+        height="1067"
+        fetchpriority="high"
+        decoding="async"
+        class="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500"
+        :class="heroReady ? 'opacity-100' : 'opacity-0'"
+        @load="heroReady = true"
+        @error="heroReady = true"
+      >
+      <div class="absolute inset-0 bg-brand-900/55 sm:bg-gradient-to-r sm:from-brand-900/85 sm:via-brand-900/55 sm:to-brand-900/25" />
     </div>
 
     <div class="relative z-10 container mx-auto px-4 pt-16 sm:pt-20 pb-36 sm:pb-40 md:pb-44">
       <div class="max-w-4xl text-left">
-        <h1 class="text-[32px] sm:text-[48px] md:text-[68px] lg:text-[76px] font-[900] text-white mb-6 sm:mb-10 leading-[1] sm:leading-[0.95] tracking-tighter animate-fade-in-up uppercase">
-          La technicité<br />
-          au service de la santé
+        <h1 class="text-[32px] sm:text-[48px] md:text-[68px] lg:text-[76px] font-[900] text-white mb-6 sm:mb-10 leading-[1] sm:leading-[0.95] tracking-tighter animate-fade-in-up uppercase drop-shadow-lg">
+          OXYNOVA<br />
+          RDC SARL
         </h1>
 
-        <p class="text-[15px] sm:text-[17px] text-white/75 mb-8 sm:mb-14 max-w-xl leading-relaxed animate-fade-in-up delay-200 font-medium">
+        <p class="text-[15px] sm:text-[17px] text-white/85 mb-8 sm:mb-14 max-w-xl leading-relaxed animate-fade-in-up delay-200 font-medium drop-shadow">
           Solutions complètes en ingénierie biomédicale : oxygène médical, équipements, infrastructures hospitalières et maintenance professionnelle.
         </p>
 
@@ -34,4 +41,22 @@
 </template>
 
 <script setup lang="ts">
+const heroReady = ref(false)
+
+onMounted(() => {
+  // Cached image may already be complete before @load fires
+  const img = document.querySelector<HTMLImageElement>('img[src="/images/about-one.jpg"]')
+  if (img?.complete && img.naturalWidth > 0) heroReady.value = true
+})
+
+useHead({
+  link: [
+    {
+      rel: 'preload',
+      as: 'image',
+      href: '/images/about-one.jpg',
+      fetchpriority: 'high',
+    },
+  ],
+})
 </script>

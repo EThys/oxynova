@@ -62,43 +62,57 @@ export const oxynovaContent = {
     weekdays: 'Lundi – Vendredi : 09h00 – 16h00',
     saturday: '',
   },
-  organization: [
-    {
-      name: 'Direction Générale',
-      role: 'Pilotage stratégique',
-      description: 'Orientation stratégique, gouvernance et partenariats.',
+  organization: {
+    assembly: {
+      name: 'Assemblée des associés',
+      role: 'Gouvernance',
+      description: 'Orientation stratégique et décisions des associés.',
     },
-    {
-      name: 'Direction Technique',
-      role: 'Expertise technique',
-      description: 'Ingénierie biomédicale, infrastructures et qualité des interventions.',
+    general: {
+      name: 'Direction générale',
+      role: 'Pilotage',
+      description: 'Pilotage opérationnel, gouvernance et partenariats.',
     },
-    {
-      name: 'Direction Commerciale et Marketing',
-      role: 'Développement commercial',
-      description: 'Relation clients, offres et positionnement de l\'entreprise.',
-    },
-    {
-      name: 'Direction Administrative et Financière',
-      role: 'Gestion administrative',
-      description: 'Administration, finances et suivi administratif des projets.',
-    },
-    {
-      name: 'Direction Juridique et Conformité',
-      role: 'Juridique & conformité',
-      description: 'Cadre légal, conformité réglementaire et sécurisation des engagements.',
-    },
-    {
-      name: 'Service Logistique et Approvisionnement',
-      role: 'Chaîne d\'approvisionnement',
-      description: 'Approvisionnement, stock et logistique des équipements.',
-    },
-    {
-      name: 'Service Maintenance et Assistance Technique',
-      role: 'Maintenance & support',
-      description: 'Maintenance préventive et corrective, assistance sur site.',
-    },
-  ] satisfies OrgUnit[],
+    support: [
+      {
+        name: 'Direction RH et juridique',
+        role: 'Ressources humaines & juridique',
+        description: 'Gestion du personnel, cadre légal et conformité.',
+      },
+      {
+        name: 'Direction administrative et financière',
+        role: 'Administration & finances',
+        description: 'Administration, finances et suivi des projets.',
+      },
+    ] satisfies OrgUnit[],
+    operational: [
+      {
+        name: 'Direction technique',
+        role: 'Expertise technique',
+        description: 'Ingénierie biomédicale, infrastructures et qualité des interventions.',
+      },
+      {
+        name: 'Direction commerciale et marketing',
+        role: 'Développement commercial',
+        description: 'Relation clients, offres et positionnement de l\'entreprise.',
+      },
+      {
+        name: 'Direction informatique et digital',
+        role: 'Systèmes & digital',
+        description: 'Systèmes d\'information, digitalisation et outils numériques.',
+      },
+      {
+        name: 'Direction logistique et approvisionnement',
+        role: 'Chaîne d\'approvisionnement',
+        description: 'Approvisionnement, stock et logistique des équipements.',
+      },
+      {
+        name: 'Direction formation',
+        role: 'Renforcement des capacités',
+        description: 'Formation et montée en compétences des équipes.',
+      },
+    ] satisfies OrgUnit[],
+  },
   domains: [
     {
       name: 'Ingénierie biomédicale',
@@ -225,36 +239,29 @@ export const oxynovaContent = {
   ],
   team: [
     {
-      name: 'Direction',
-      role: 'Pilotage stratégique',
-      department: 'Direction',
-      bio: 'Oriente la stratégie d\'OXYNOVA RDC et les partenariats avec les structures de santé.',
-      image: '/images/tzo.jpg',
+      name: '',
+      role: '',
+      department: '',
+      bio: '',
+      image: '/images/directrice.jpg',
     },
     {
-      name: 'Équipe biomédicale',
-      role: 'Ingénieurs & techniciens',
-      department: 'Ingénierie biomédicale',
-      bio: 'Installation, audits et maintenance des équipements médicaux.',
-      image: '/images/tzo.jpg',
-    },
-    {
-      name: 'Équipe infrastructures',
-      role: 'Experts techniques',
-      department: 'Infrastructures',
-      bio: 'Oxygène médical, ventilation, climatisation et sécurisation hospitalière.',
+      name: '',
+      role: '',
+      department: '',
+      bio: '',
       image: '/images/one.jpg',
     },
     {
-      name: 'Équipe projets & formation',
-      role: 'Coordination & renforcement',
-      department: 'Projets',
-      bio: 'Gestion de projets santé et montée en compétences des équipes clientes.',
-      image: '/images/one.jpg',
+      name: '',
+      role: '',
+      department: '',
+      bio: '',
+      image: '/images/team.jpg',
     },
   ],
   stats: [
-    { value: '7', label: 'Directions & services' },
+    { value: '7', label: 'Directions' },
     { value: '6', label: 'Domaines d\'activités' },
     { value: '100%', label: 'Focus santé' },
     { value: 'Kin', label: 'Basés à Kinshasa' },

@@ -5,7 +5,7 @@
       <div class="absolute inset-0 bg-brand-900/75" />
       <div class="relative z-10 container mx-auto px-4 py-16">
         <h1 class="text-[36px] sm:text-[56px] font-[900] text-white uppercase tracking-tighter mb-4">Médias</h1>
-        <p class="text-white/70 font-medium max-w-xl mx-auto">Galerie photos & vidéos YouTube</p>
+        <p class="text-white/70 font-medium max-w-xl mx-auto">Galerie photos</p>
       </div>
     </header>
 
@@ -44,7 +44,7 @@
       </div>
     </section>
 
-    <!-- Vidéos -->
+    <!-- Vidéos (temporairement désactivé)
     <section class="py-16 sm:py-24 bg-gray-50">
       <div class="container mx-auto px-4">
         <div class="mb-10">
@@ -78,6 +78,7 @@
         </div>
       </div>
     </section>
+    -->
 
     <!-- Lightbox -->
     <Teleport to="body">
@@ -110,7 +111,7 @@
 import type { GalleryImage } from '~/types/admin'
 
 const { gallery, pending: galleryPending } = useGallery()
-const { videos, pending: videosPending } = useVideos()
+// const { videos, pending: videosPending } = useVideos()
 
 const lightbox = ref<GalleryImage | null>(null)
 

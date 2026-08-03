@@ -11,39 +11,53 @@
         </nuxt-link>
       </div>
 
-      <div v-if="preview.length" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-        <nuxt-link
+      <div v-if="preview.length" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 max-w-5xl mx-auto">
+        <button
           v-for="(member, i) in preview"
           :key="member.id"
-          to="/equipe"
-          class="group relative block aspect-[3/4] overflow-hidden rounded-[4px] shadow-[0_12px_40px_-16px_rgba(3,26,58,0.35)] ring-1 ring-brand-900/5 team-card-enter"
+          type="button"
+          class="group relative block aspect-[3/4] overflow-hidden rounded-[4px] shadow-[0_12px_40px_-16px_rgba(3,26,58,0.35)] ring-1 ring-brand-900/5 team-card-enter text-left cursor-zoom-in w-full"
           :style="{ animationDelay: `${i * 90}ms` }"
+          @click="lightbox = member.image"
         >
           <img
             :src="member.image"
-            :alt="member.name"
+            alt="Membre de l'équipe OXYNOVA"
             class="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-110"
             loading="lazy"
           >
-          <div class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
-          <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-            <span class="inline-block mb-3 px-2.5 py-1 bg-brand-600 text-white text-[10px] font-[900] uppercase tracking-wider rounded-[2px]">
-              {{ member.department }}
-            </span>
-            <h3 class="text-[18px] sm:text-[20px] font-[900] text-white uppercase tracking-tight leading-tight">
-              {{ member.name }}
-            </h3>
-            <p class="text-brand-300 text-[12px] font-[900] uppercase tracking-wider mt-2">
-              {{ member.role }}
-            </p>
-          </div>
-        </nuxt-link>
+          <div class="absolute inset-0 bg-brand-900/0 group-hover:bg-brand-900/20 transition-colors duration-500" />
+          <span class="absolute bottom-4 right-4 text-white/90 text-[10px] font-[900] uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+            Agrandir
+          </span>
+        </button>
       </div>
 
       <div v-else class="text-center py-10 text-gray-400 font-medium text-sm">
         L'équipe sera bientôt présentée ici.
       </div>
     </div>
+
+    <Teleport to="body">
+      <div
+        v-if="lightbox"
+        class="fixed inset-0 z-[100] bg-brand-900/92 flex items-center justify-center p-4 sm:p-8"
+        @click.self="lightbox = null"
+      >
+        <button
+          type="button"
+          class="absolute top-4 right-4 text-white text-sm font-[900] uppercase tracking-wider hover:text-brand-300"
+          @click="lightbox = null"
+        >
+          Fermer
+        </button>
+        <img
+          :src="lightbox"
+          alt="Membre de l'équipe OXYNOVA"
+          class="max-w-full max-h-[88vh] object-contain rounded-[2px] shadow-2xl"
+        >
+      </div>
+    </Teleport>
   </section>
 </template>
 
@@ -57,6 +71,8 @@ const { data: apiTeam, refresh } = useFetch<TeamMember[]>('/api/team', {
   server: true,
   lazy: true,
 })
+
+const lightbox = ref<string | null>(null)
 
 const fallback = oxynovaContent.team.map((m, i) => ({
   id: `fallback-${i}`,
@@ -75,12 +91,19 @@ const preview = computed(() => {
   const list = (apiTeam.value?.length ? apiTeam.value : fallback)
     .slice()
     .sort((a, b) => a.order - b.order)
-  return list.slice(0, 4)
+  return list.slice(0, 3)
 })
+
+function onKey(e: KeyboardEvent) {
+  if (e.key === 'Escape') lightbox.value = null
+}
 
 onMounted(() => {
   if (!apiTeam.value?.length) refresh()
+  window.addEventListener('keydown', onKey)
 })
+
+onUnmounted(() => window.removeEventListener('keydown', onKey))
 </script>
 
 <style scoped>

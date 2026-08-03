@@ -66,11 +66,12 @@ onMounted(() => {
     finish()
   }
 
-  if (document.readyState === 'complete') {
+  // Ne pas attendre window.load (toutes les images) — évite un hero « vide » intermittent
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
     onWindowReady()
   }
   else {
-    window.addEventListener('load', onWindowReady, { once: true })
+    document.addEventListener('DOMContentLoaded', onWindowReady, { once: true })
   }
 
   const nuxtApp = useNuxtApp()

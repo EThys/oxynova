@@ -6,16 +6,12 @@
         <h2 class="text-[28px] sm:text-[40px] font-[900] text-[#1a1a1b] uppercase tracking-tighter">Vision & Mission</h2>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-6 sm:gap-8">
-        <article class="group bg-white p-8 sm:p-10 rounded-[4px] border border-gray-100 shadow-sm card-hover animate-on-scroll delay-100">
-          <span class="text-brand-600 text-[11px] font-[900] uppercase tracking-widest mb-4 block">Objectif</span>
-          <p class="text-gray-600 text-[15px] leading-relaxed font-medium">{{ oxynovaContent.objective }}</p>
-        </article>
-        <article class="group bg-brand-700 p-8 sm:p-10 rounded-[4px] text-white shadow-lg card-hover-accent animate-on-scroll delay-200">
+      <div class="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+        <article class="group bg-brand-700 p-8 sm:p-10 rounded-[4px] text-white shadow-lg card-hover-accent animate-on-scroll delay-100">
           <span class="text-brand-100 text-[11px] font-[900] uppercase tracking-widest mb-4 block">Vision</span>
           <p class="text-white/85 text-[15px] leading-relaxed font-medium">{{ oxynovaContent.vision }}</p>
         </article>
-        <article class="group bg-white p-8 sm:p-10 rounded-[4px] border border-gray-100 shadow-sm card-hover animate-on-scroll delay-300">
+        <article class="group bg-white p-8 sm:p-10 rounded-[4px] border border-gray-100 shadow-sm card-hover animate-on-scroll delay-200">
           <span class="text-brand-600 text-[11px] font-[900] uppercase tracking-widest mb-4 block">Mission</span>
           <p class="text-gray-600 text-[15px] leading-relaxed font-medium">{{ oxynovaContent.mission }}</p>
         </article>

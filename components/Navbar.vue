@@ -233,7 +233,7 @@ const links: NavItem[] = [
   { to: '/', label: 'Accueil' },
   { to: '/about', label: 'À propos' },
   { to: '/services', label: 'Services' },
-  { to: '/realisations', label: 'Réalisations' },
+  // { to: '/realisations', label: 'Réalisations' },
   {
     label: 'Entreprise',
     children: [

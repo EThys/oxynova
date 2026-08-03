@@ -5,8 +5,8 @@
         <div class="relative animate-on-scroll animate-left">
           <div class="rounded-[2px] overflow-hidden shadow-2xl">
             <img
-              :src="oxynovaContent.images.maintenance"
-              alt="Maintenance biomédicale — OXYNOVA RDC"
+              :src="oxynovaContent.images.oxygenPlant"
+              alt="OXYNOVA RDC — Partenaire technique"
               class="w-full h-[320px] sm:h-[420px] object-cover object-center"
             />
           </div>

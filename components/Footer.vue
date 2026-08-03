@@ -22,7 +22,7 @@
             <li><nuxt-link to="/" class="hover:text-brand-700 transition-colors">Accueil</nuxt-link></li>
             <li><nuxt-link to="/about" class="hover:text-brand-700 transition-colors">À propos</nuxt-link></li>
             <li><nuxt-link to="/services" class="hover:text-brand-700 transition-colors">Services</nuxt-link></li>
-            <li><nuxt-link to="/realisations" class="hover:text-brand-700 transition-colors">Réalisations</nuxt-link></li>
+            <!-- <li><nuxt-link to="/realisations" class="hover:text-brand-700 transition-colors">Réalisations</nuxt-link></li> -->
             <li><nuxt-link to="/organisation" class="hover:text-brand-700 transition-colors">Organisation</nuxt-link></li>
             <li><nuxt-link to="/equipe" class="hover:text-brand-700 transition-colors">Équipe</nuxt-link></li>
             <li><nuxt-link to="/medias" class="hover:text-brand-700 transition-colors">Médias</nuxt-link></li>

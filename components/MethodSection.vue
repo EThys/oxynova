@@ -1,7 +1,14 @@
 <template>
   <section class="py-16 sm:py-24 lg:py-28 bg-brand-900 font-sans relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-brand-800 via-brand-900 to-brand-900" />
-    <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-700/20 to-transparent pointer-events-none" />
+    <div class="absolute inset-0">
+      <img
+        src="/images/method.jpg"
+        alt=""
+        class="w-full h-full object-cover object-center"
+      >
+      <div class="absolute inset-0 bg-brand-900/85" />
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-900/90 via-brand-900/75 to-brand-800/70" />
+    </div>
 
     <div class="container mx-auto px-4 relative z-10">
       <div class="text-center mb-12 sm:mb-16 animate-on-scroll">
