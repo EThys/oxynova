@@ -1,0 +1,38 @@
+[
+  {
+    "id": "team-1",
+    "name": "NTUMBA MUKUNA Joelle",
+    "role": "Directrice générale",
+    "department": "",
+    "bio": "",
+    "image": "/images/directrice.jpg",
+    "published": true,
+    "order": 0,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-08-03T00:00:00.000Z"
+  },
+  {
+    "id": "team-2",
+    "name": "",
+    "role": "",
+    "department": "",
+    "bio": "",
+    "image": "/images/one.jpg",
+    "published": true,
+    "order": 1,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-08-03T00:00:00.000Z"
+  },
+  {
+    "id": "team-3",
+    "name": "",
+    "role": "",
+    "department": "",
+    "bio": "",
+    "image": "/images/team.jpg",
+    "published": true,
+    "order": 2,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-08-03T00:00:00.000Z"
+  }
+]

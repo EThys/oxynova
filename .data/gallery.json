@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gal-1",
+    "title": "Centrale oxygène médical PSA",
+    "caption": "Kinshasa — RDC",
+    "image": "/images/one.jpg",
+    "published": true,
+    "order": 0,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-07-23T00:00:00.000Z"
+  },
+  {
+    "id": "gal-2",
+    "title": "Maintenance biomédicale",
+    "caption": "Intervention technique sur équipements de santé",
+    "image": "/images/tzo.jpg",
+    "published": true,
+    "order": 1,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-07-23T00:00:00.000Z"
+  }
+]

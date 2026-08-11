@@ -1,0 +1,35 @@
+[
+  {
+    "id": "oxygene-hospitalier",
+    "partner": "Structures sanitaires",
+    "domain": "Infrastructures techniques hospitalières",
+    "description": "Installation et maintenance de l'écosystème d'oxygène médical pour hôpitaux et centres de santé.",
+    "status": "Expertise cœur de métier",
+    "image": "/images/one.jpg",
+    "published": true,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-07-23T00:00:00.000Z"
+  },
+  {
+    "id": "parc-biomedical",
+    "partner": "Cliniques & hôpitaux",
+    "domain": "Ingénierie biomédicale",
+    "description": "Fourniture, installation et maintenance préventive et corrective d'équipements biomédicaux, avec audits techniques.",
+    "status": "Interventions continues",
+    "image": "/images/tzo.jpg",
+    "published": true,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-07-23T00:00:00.000Z"
+  },
+  {
+    "id": "digital-sante",
+    "partner": "Établissements de santé",
+    "domain": "Digitalisation",
+    "description": "Conception et développement de solutions numériques et de systèmes d'information hospitaliers.",
+    "status": "Accompagnement sur mesure",
+    "image": "/images/one.jpg",
+    "published": true,
+    "createdAt": "2026-07-23T00:00:00.000Z",
+    "updatedAt": "2026-07-23T00:00:00.000Z"
+  }
+]
