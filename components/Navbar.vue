@@ -267,7 +267,7 @@ watch(isOpen, (open) => {
 watch(() => route.path, () => closeMenu())
 
 onUnmounted(() => {
-  document.body.style.overflow = ''
+  if (import.meta.client) document.body.style.overflow = ''
 })
 </script>
 
