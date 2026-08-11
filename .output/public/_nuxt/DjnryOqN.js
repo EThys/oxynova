@@ -1,0 +1,1 @@
+import{M as o,N as r,E as m}from"./Yo3Vww58.js";import{a as s}from"./CDPrphSI.js";import"./xxXGA9lG.js";import"./CzXNZFDE.js";const p=o(async a=>{let t,e;if(a.path==="/admin/login")return;const{authenticated:i,fetchAuth:n}=s();if([t,e]=r(()=>n()),await t,e(),!i.value)return m("/admin/login")});export{p as default};
