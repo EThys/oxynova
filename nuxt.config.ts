@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     preset: process.env.VERCEL ? 'vercel' : undefined,
   },
   runtimeConfig: {
-    adminPassword: process.env.ADMIN_PASSWORD || 'oxynova2026',
+    adminPassword: process.env.ADMIN_PASSWORD || 'Oxynova2026@',
     adminSecret: process.env.ADMIN_SECRET || 'oxynova-dev-secret-change-in-production',
     // SMTP Hostinger (laisser vide tant que le mail pro n'est pas activé)
     smtpHost: process.env.SMTP_HOST || '',

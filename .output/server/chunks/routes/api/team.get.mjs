@@ -1,4 +1,4 @@
-import { c as defineEventHandler, A as getTeam } from '../../_/nitro.mjs';
+import { c as defineEventHandler, B as getTeam } from '../../_/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';

@@ -1,4 +1,4 @@
-import { c as defineEventHandler, r as readBody, e as createError, o as getMessages, l as updateMessage } from '../../../../_/nitro.mjs';
+import { c as defineEventHandler, r as readBody, e as createError, p as getMessages, m as updateMessage } from '../../../../_/nitro.mjs';
 import { r as requireAdmin } from '../../../../_/auth.mjs';
 import { A as ATTACHMENT_LIMITS } from '../../../../_/attachments.mjs';
 import { i as isMailConfigured, a as sendAdminReply } from '../../../../_/mail.mjs';
@@ -12,6 +12,7 @@ import 'node:crypto';
 import 'node:fs/promises';
 import 'node:url';
 import 'nodemailer';
+import '../../../../_/sanitizeHtml.mjs';
 
 const reply_post = defineEventHandler(async (event) => {
   var _a, _b;

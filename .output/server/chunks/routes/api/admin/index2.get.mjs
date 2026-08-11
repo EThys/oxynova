@@ -1,5 +1,6 @@
-import { c as defineEventHandler, n as getQuery, o as getMessages } from '../../../_/nitro.mjs';
+import { c as defineEventHandler, o as getQuery, p as getMessages } from '../../../_/nitro.mjs';
 import { r as requireAdmin } from '../../../_/auth.mjs';
+import { s as syncInboxIfDue } from '../../../_/imap.mjs';
 import { g as getMessageStatus } from '../../../_/admin.mjs';
 import 'node:http';
 import 'node:https';
@@ -10,10 +11,18 @@ import 'node:path';
 import 'node:crypto';
 import 'node:fs/promises';
 import 'node:url';
+import 'imapflow';
+import 'mailparser';
+import '../../../_/attachments.mjs';
+import '../../../_/sanitizeHtml.mjs';
 
 const index_get = defineEventHandler(async (event) => {
   requireAdmin(event);
   const query = getQuery(event);
+  const wantSync = query.sync === "1" || query.sync === "true";
+  if (wantSync) {
+    await syncInboxIfDue({ throttleMs: 15e3 });
+  }
   const status = String(query.status || "all");
   const page = Math.max(1, Number(query.page) || 1);
   const limit = Math.min(50, Math.max(5, Number(query.limit) || 10));

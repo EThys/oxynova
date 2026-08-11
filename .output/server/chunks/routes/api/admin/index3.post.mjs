@@ -1,4 +1,4 @@
-import { c as defineEventHandler, r as readBody, e as createError, C as addTeamMember } from '../../../_/nitro.mjs';
+import { c as defineEventHandler, r as readBody, e as createError, D as addTeamMember } from '../../../_/nitro.mjs';
 import { r as requireAdmin } from '../../../_/auth.mjs';
 import 'node:http';
 import 'node:https';

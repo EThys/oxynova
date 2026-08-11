@@ -1,9 +1,8 @@
 ﻿<template>
   <div>
     <div class="mb-8 sm:mb-10">
-      <p class="text-[11px] font-[900] uppercase tracking-[0.25em] text-brand-700 mb-2">Vue d'ensemble</p>
-      <h1 class="text-2xl sm:text-[32px] font-[900] text-[#1a1a1b] uppercase tracking-tighter">Tableau de bord</h1>
-      <p class="text-gray-500 font-medium mt-2">Suivi des messages reçus et des réponses.</p>
+      <h1 class="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight">Tableau de bord</h1>
+      <p class="text-slate-500 text-sm font-medium mt-1.5">Vue d’ensemble de la messagerie OXYNOVA.</p>
     </div>
 
     <div v-if="pending" class="text-gray-500 font-medium">Chargement...</div>
@@ -66,23 +65,25 @@
           <li v-for="msg in stats.recent" :key="msg.id">
             <NuxtLink
               :to="`/admin/messages?id=${msg.id}`"
-              class="flex items-start gap-4 px-5 sm:px-6 py-4 hover:bg-brand-50/40 transition-colors"
+              class="flex flex-col gap-1 sm:flex-row sm:items-start sm:gap-4 px-4 sm:px-6 py-4 hover:bg-brand-50/40 transition-colors"
             >
-              <span
-                class="mt-1.5 w-2 h-2 rounded-full flex-shrink-0"
-                :class="statusDot(msg)"
-              />
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2 flex-wrap mb-0.5">
-                  <span class="font-[900] text-sm truncate" :class="!msg.read ? 'text-brand-900' : 'text-[#1a1a1b]'">
-                    {{ msg.name }}
-                  </span>
-                  <span class="status-pill" :class="statusPillClass(msg)">{{ statusLabel(msg) }}</span>
+              <div class="flex items-start gap-3 min-w-0 flex-1">
+                <span
+                  class="mt-1.5 w-2 h-2 rounded-full flex-shrink-0"
+                  :class="statusDot(msg)"
+                />
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                    <span class="font-[900] text-sm truncate" :class="!msg.read ? 'text-brand-900' : 'text-[#1a1a1b]'">
+                      {{ msg.name }}
+                    </span>
+                    <span class="status-pill" :class="statusPillClass(msg)">{{ statusLabel(msg) }}</span>
+                  </div>
+                  <p class="text-xs text-gray-500 font-medium truncate">{{ subjectLabel(msg.subject) }}</p>
+                  <p class="text-xs text-gray-400 line-clamp-2 sm:line-clamp-1 mt-1">{{ emailPreviewText(msg.message) }}</p>
                 </div>
-                <p class="text-xs text-gray-500 font-medium truncate">{{ subjectLabel(msg.subject) }}</p>
-                <p class="text-xs text-gray-400 line-clamp-1 mt-1">{{ msg.message }}</p>
               </div>
-              <span class="text-[10px] text-gray-400 font-medium whitespace-nowrap">{{ formatShortDate(msg.createdAt) }}</span>
+              <span class="text-[10px] text-gray-400 font-medium whitespace-nowrap pl-5 sm:pl-0 sm:pt-0.5">{{ formatShortDate(msg.createdAt) }}</span>
             </NuxtLink>
           </li>
         </ul>
@@ -94,6 +95,7 @@
 <script setup lang="ts">
 import type { ContactMessage } from '~/types/admin'
 import { CONTACT_SUBJECTS, getMessageStatus, MESSAGE_STATUS_LABELS } from '~/types/admin'
+import { emailPreviewText } from '~/utils/emailPreview'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
@@ -132,18 +134,18 @@ useAdminSeo('Tableau de bord')
 
 <style scoped>
 .dash-card {
-  @apply block bg-white rounded-[4px] p-4 sm:p-5 border border-gray-100 shadow-sm hover:border-brand-300 hover:shadow-md transition-all;
+  @apply block bg-white rounded-lg p-4 sm:p-5 border border-slate-200 hover:border-brand-300 hover:shadow-sm transition-all;
 }
 .dash-label {
-  @apply block text-[10px] font-[900] text-gray-400 uppercase tracking-[0.18em] mb-2;
+  @apply block text-[11px] font-medium text-slate-400 mb-2;
 }
 .dash-value {
-  @apply block text-2xl sm:text-3xl font-[900] text-[#1a1a1b] tracking-tight;
+  @apply block text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight;
 }
 .dash-card--accent {
-  @apply border-brand-100 bg-gradient-to-br from-white to-brand-50/60;
+  @apply border-brand-200 bg-brand-50/40;
 }
 .status-pill {
-  @apply text-[9px] font-[900] uppercase tracking-wider px-1.5 py-0.5 rounded-[2px];
+  @apply text-[10px] font-semibold tracking-wide px-1.5 py-0.5 rounded-md;
 }
 </style>

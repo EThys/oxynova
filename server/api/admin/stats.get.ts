@@ -2,6 +2,12 @@ import { getMessageStatus } from '~/types/admin'
 
 export default defineEventHandler(async (event) => {
   requireAdmin(event)
+
+  const query = getQuery(event)
+  if (query.sync === '1' || query.sync === 'true') {
+    await syncInboxIfDue({ throttleMs: 15_000 })
+  }
+
   const messages = await getMessages()
 
   return {

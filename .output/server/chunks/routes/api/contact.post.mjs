@@ -1,4 +1,4 @@
-import { c as defineEventHandler, r as readBody, e as createError, m as addMessage } from '../../_/nitro.mjs';
+import { c as defineEventHandler, r as readBody, e as createError, n as addMessage } from '../../_/nitro.mjs';
 import { b as sendContactNotification } from '../../_/mail.mjs';
 import 'node:http';
 import 'node:https';
@@ -11,6 +11,7 @@ import 'node:fs/promises';
 import 'node:url';
 import 'nodemailer';
 import '../../_/attachments.mjs';
+import '../../_/sanitizeHtml.mjs';
 
 const contact_post = defineEventHandler(async (event) => {
   var _a, _b, _c, _d, _e, _f;

@@ -53,18 +53,16 @@ export default defineEventHandler(async (event) => {
     subject,
     message,
     source: 'outbound',
-    reply: message,
     replyStatus: sendEmail ? 'sent' : 'draft',
-    replyAttachments: attachments.length ? attachments : undefined,
+    attachments: attachments.length ? attachments : undefined,
   })
 
   // addMessage force read:false — on corrige pour un message sortant
+  // Pas de champ "reply" : ce n'est pas une réponse, c'est un message écrit
   const updated = await updateMessage(saved.id, {
     read: true,
-    reply: message,
     repliedAt: new Date().toISOString(),
     replyStatus: sendEmail ? 'sent' : 'draft',
-    replyAttachments: attachments.length ? attachments : undefined,
   })
 
   return {

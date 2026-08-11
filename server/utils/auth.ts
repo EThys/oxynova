@@ -70,7 +70,7 @@ export function requireAdmin(event: H3Event): void {
 
 export function checkAdminPassword(event: H3Event, password: string): boolean {
   const config = useRuntimeConfig(event)
-  const expected = config.adminPassword || 'oxynova2026'
+  const expected = config.adminPassword || 'Oxynova2026@'
   if (!password || password.length !== expected.length) {
     return false
   }

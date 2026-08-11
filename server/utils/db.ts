@@ -70,6 +70,11 @@ export async function updateMessage(
   return messages[index]
 }
 
+export async function getMessageById(id: string): Promise<ContactMessage | null> {
+  const messages = await getMessages()
+  return messages.find(m => m.id === id) || null
+}
+
 export async function deleteMessage(id: string): Promise<boolean> {
   const messages = await getMessages()
   const filtered = messages.filter(m => m.id !== id)

@@ -64,6 +64,8 @@ export interface ContactMessage {
   company?: string
   subject: string
   message: string
+  /** Corps HTML (mails IMAP riches : images, liens, mise en page) */
+  messageHtml?: string
   read: boolean
   reply?: string
   repliedAt?: string
@@ -74,6 +76,10 @@ export interface ContactMessage {
   source?: 'web' | 'email' | 'outbound'
   /** Message-ID IMAP pour éviter les doublons */
   emailMessageId?: string
+  /** UID IMAP (Hostinger) pour suppression / sync */
+  imapUid?: number
+  /** Dossier IMAP d’origine (ex. INBOX) */
+  imapMailbox?: string
   /** Pièces jointes reçues */
   attachments?: MessageAttachment[]
   /** Pièces jointes de la réponse admin */

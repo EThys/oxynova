@@ -1,7 +1,10 @@
 import nodemailer from 'nodemailer'
 import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import type { ContactMessage, MessageAttachment } from '~/types/admin'
+import { oxynovaContent } from '~/data/content'
 import { absoluteUploadPath } from './attachments'
+import { htmlToPlainPreview, sanitizeEmailHtml } from './sanitizeHtml'
 
 export type SmtpConfig = {
   host: string
@@ -46,6 +49,97 @@ function escapeHtml(value: string) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
+}
+
+function ensureLinksOpenInNewTab(html: string) {
+  return html.replace(/<a\b([^>]*)>/gi, (_full, attrs: string) => {
+    let next = String(attrs || '')
+    if (!/\btarget\s*=/i.test(next)) next += ' target="_blank"'
+    else {
+      next = next.replace(/\btarget\s*=\s*(['"]).*?\1/gi, 'target="_blank"')
+      next = next.replace(/\btarget\s*=\s*[^\s>]+/gi, 'target="_blank"')
+    }
+    if (!/\brel\s*=/i.test(next)) next += ' rel="noopener noreferrer"'
+    return `<a${next}>`
+  })
+}
+
+function getSiteUrl() {
+  const config = useRuntimeConfig()
+  return String(config.public.siteUrl || 'https://www.oxynovardc.com').replace(/\/$/, '')
+}
+
+function getSignatureInfo(siteUrl: string) {
+  const c = oxynovaContent.contact
+  return {
+    company: oxynovaContent.fullName,
+    tagline: oxynovaContent.tagline,
+    address: c.address,
+    phone: c.phone,
+    phoneAlt: c.phoneAlt,
+    email: c.email,
+    siteUrl,
+    siteLabel: siteUrl.replace(/^https?:\/\//, ''),
+  }
+}
+
+function buildSignatureText(siteUrl: string) {
+  const s = getSignatureInfo(siteUrl)
+  return [
+    '',
+    '—',
+    s.company,
+    s.tagline,
+    s.address,
+    `Tél. : ${s.phone}${s.phoneAlt ? ` / ${s.phoneAlt}` : ''}`,
+    `Email : ${s.email}`,
+    s.siteUrl,
+  ].join('\n')
+}
+
+function buildSignatureHtml(siteUrl: string) {
+  const s = getSignatureInfo(siteUrl)
+  const phoneHref = s.phone.replace(/\s+/g, '')
+  const phoneAltHref = s.phoneAlt?.replace(/\s+/g, '') || ''
+
+  return `
+    <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:480px">
+        <tr>
+          <td style="vertical-align:top;padding-right:16px;width:64px">
+            <img src="cid:oxynova-logo" alt="OXYNOVA RDC" width="56" height="56" style="display:block;border:0;border-radius:6px;object-fit:contain" />
+          </td>
+          <td style="vertical-align:top;font-size:13px;line-height:1.5;color:#1a1a1b">
+            <strong style="color:#174794;font-size:14px">${escapeHtml(s.company)}</strong><br />
+            <span style="color:#64748b">${escapeHtml(s.tagline)}</span><br />
+            <span style="color:#475569;display:inline-block;margin-top:6px">${escapeHtml(s.address)}</span><br />
+            <span style="display:inline-block;margin-top:4px">
+              <a href="tel:${escapeHtml(phoneHref)}" style="color:#174794;text-decoration:none">${escapeHtml(s.phone)}</a>
+              ${s.phoneAlt ? ` <span style="color:#94a3b8">·</span> <a href="tel:${escapeHtml(phoneAltHref)}" style="color:#174794;text-decoration:none">${escapeHtml(s.phoneAlt)}</a>` : ''}
+            </span><br />
+            <a href="mailto:${escapeHtml(s.email)}" style="color:#174794;text-decoration:none">${escapeHtml(s.email)}</a><br />
+            <a href="${escapeHtml(s.siteUrl)}" style="color:#174794;text-decoration:none;font-weight:600">${escapeHtml(s.siteLabel)}</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `
+}
+
+async function logoAttachment() {
+  const logoPath = join(process.cwd(), 'public', 'images', 'logo.png')
+  try {
+    await readFile(logoPath)
+    return {
+      filename: 'logo-oxynova.png',
+      path: logoPath,
+      cid: 'oxynova-logo',
+      contentType: 'image/png',
+    }
+  }
+  catch {
+    return null
+  }
 }
 
 export async function sendContactNotification(message: ContactMessage): Promise<{ sent: boolean; skipped?: boolean; error?: string }> {
@@ -153,24 +247,26 @@ export async function sendOutboundMail(input: {
     return { sent: false, skipped: true }
   }
 
+  const siteUrl = getSiteUrl()
   const transporter = createTransporter(smtp)
-  const attachments = await toNodemailerAttachments(input.attachments || [])
+  const fileAttachments = await toNodemailerAttachments(input.attachments || [])
+  const logo = await logoAttachment()
   const body = input.body.trim()
+  const looksHtml = /<[a-z][\s\S]*>/i.test(body)
+  const safeHtml = looksHtml ? sanitizeEmailHtml(body) : ''
+  const plain = looksHtml
+    ? htmlToPlainPreview(safeHtml || body, 5000)
+    : body
+  const htmlInner = looksHtml
+    ? ensureLinksOpenInNewTab(safeHtml || body)
+    : escapeHtml(body).replace(/\n/g, '<br>')
 
-  const text = [
-    body,
-    '',
-    '—',
-    'OXYNOVA RDC SARL',
-    'Ingénierie biomédicale — Kinshasa, RDC',
-  ].join('\n')
+  const text = `${plain}${buildSignatureText(siteUrl)}`
 
   const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1a1a1b">
-      <div style="white-space:pre-wrap">${escapeHtml(body).replace(/\n/g, '<br>')}</div>
-      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0" />
-      <p style="font-size:13px;color:#174794;font-weight:700;margin:0">OXYNOVA RDC SARL</p>
-      <p style="font-size:12px;color:#666;margin:4px 0 0">Ingénierie biomédicale — Kinshasa, RDC</p>
+    <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:#1a1a1b">
+      <div>${htmlInner}</div>
+      ${buildSignatureHtml(siteUrl)}
     </div>
   `
 
@@ -182,7 +278,10 @@ export async function sendOutboundMail(input: {
       subject: input.subject.trim(),
       text,
       html,
-      attachments,
+      attachments: [
+        ...fileAttachments,
+        ...(logo ? [logo] : []),
+      ],
       headers: input.inReplyTo
         ? { 'In-Reply-To': input.inReplyTo, References: input.inReplyTo }
         : undefined,

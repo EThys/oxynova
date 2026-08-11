@@ -4,6 +4,12 @@ export default defineEventHandler(async (event) => {
   requireAdmin(event)
 
   const query = getQuery(event)
+  // sync=1 uniquement si demandé (évite de bloquer Envoyer / Actualiser sur IMAP)
+  const wantSync = query.sync === '1' || query.sync === 'true'
+  if (wantSync) {
+    await syncInboxIfDue({ throttleMs: 15_000 })
+  }
+
   const status = String(query.status || 'all') as MessageFilterStatus
   const page = Math.max(1, Number(query.page) || 1)
   const limit = Math.min(50, Math.max(5, Number(query.limit) || 10))

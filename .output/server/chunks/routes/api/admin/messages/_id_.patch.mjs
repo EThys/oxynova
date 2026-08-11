@@ -1,4 +1,4 @@
-import { c as defineEventHandler, g as getRouterParam, e as createError, r as readBody, l as updateMessage } from '../../../../_/nitro.mjs';
+import { c as defineEventHandler, g as getRouterParam, e as createError, r as readBody, m as updateMessage } from '../../../../_/nitro.mjs';
 import { r as requireAdmin } from '../../../../_/auth.mjs';
 import 'node:http';
 import 'node:https';

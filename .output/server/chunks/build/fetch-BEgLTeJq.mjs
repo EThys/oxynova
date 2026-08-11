@@ -1,5 +1,5 @@
 import { computed, toValue, reactive, getCurrentInstance, onServerPrefetch, ref, shallowRef, nextTick, unref, toRef } from 'vue';
-import { a3 as hash } from '../_/nitro.mjs';
+import { a5 as hash } from '../_/nitro.mjs';
 import { isPlainObject } from '@vue/shared';
 import { i as fetchDefaults, b as useNuxtApp, g as asyncDataDefaults, h as createError } from './server.mjs';
 

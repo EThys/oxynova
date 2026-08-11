@@ -2,6 +2,7 @@ import { ImapFlow } from 'imapflow'
 import { simpleParser } from 'mailparser'
 import type { ContactMessage } from '~/types/admin'
 import { saveMailAttachment } from './attachments'
+import { htmlToPlainPreview, sanitizeEmailHtml } from './sanitizeHtml'
 
 export type ImapConfig = {
   host: string
@@ -123,39 +124,94 @@ export async function syncInboxToMessages(limit = 50): Promise<ImapSyncResult> {
 
         let messageId = envelope?.messageId?.trim()
         let textBody = ''
+        let htmlBody = ''
         const attachments: ContactMessage['attachments'] = []
 
         if (msg.source) {
           try {
             const parsed = await simpleParser(msg.source)
             messageId = messageId || parsed.messageId?.trim()
-            textBody = (
-              parsed.text
-              || parsed.html?.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-              || ''
-            ).trim()
 
+            const cidToUrl = new Map<string, string>()
             const parts = parsed.attachments || []
             for (const part of parts) {
               if (!part.content || part.content.length === 0) continue
-              // Ignore inline tiny images often used as signatures
-              if (part.contentDisposition === 'inline' && part.contentType?.startsWith('image/') && part.content.length < 20_000) {
-                continue
-              }
+              const data = Buffer.isBuffer(part.content) ? part.content : Buffer.from(part.content)
+              const isImage = (part.contentType || '').startsWith('image/')
+              const isInline = part.contentDisposition === 'inline' || Boolean(part.cid)
+
+              // Images inline (cid) : toujours sauver pour affichage HTML
+              // Autres pièces : sauver sauf mini-icônes décoratives sans cid
+              if (isInline && isImage && !part.cid && data.length < 8_000) continue
+
               const saved = await saveMailAttachment({
-                filename: part.filename || `piece-${attachments.length + 1}`,
-                data: Buffer.isBuffer(part.content) ? part.content : Buffer.from(part.content),
+                filename: part.filename || (isImage ? `image-${attachments.length + 1}.png` : `piece-${attachments.length + 1}`),
+                data,
                 contentType: part.contentType,
               })
-              if (saved) attachments.push(saved)
+              if (!saved) continue
+
+              if (part.cid) {
+                const cid = String(part.cid).replace(/^<|>$/g, '').trim()
+                if (cid) cidToUrl.set(cid.toLowerCase(), saved.url)
+              }
+
+              // Ne pas polluer la liste PJ avec toutes les images de signature/tracking
+              // sauf si ce n'est pas purement inline, ou fichier nommé utile
+              if (!isInline || part.filename) {
+                attachments.push(saved)
+              }
             }
+
+            let rawHtml = typeof parsed.html === 'string' ? parsed.html : ''
+            if (rawHtml && cidToUrl.size) {
+              for (const [cid, url] of cidToUrl) {
+                const re = new RegExp(`cid:${cid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'gi')
+                rawHtml = rawHtml.replace(re, url)
+              }
+            }
+
+            if (rawHtml) {
+              htmlBody = sanitizeEmailHtml(rawHtml)
+            }
+
+            textBody = (
+              parsed.text
+              || (htmlBody ? htmlToPlainPreview(htmlBody, 2000) : '')
+              || ''
+            ).trim()
           }
           catch {
             textBody = ''
+            htmlBody = ''
           }
         }
 
         const emailMessageId = messageId || `imap-uid-${msg.uid}`
+        const existingIdx = (await getMessages()).findIndex(m => m.emailMessageId === emailMessageId)
+        if (existingIdx >= 0) {
+          // Enrichir un ancien import (HTML / UID IMAP)
+          const all = await getMessages()
+          const prev = all[existingIdx]
+          if (prev) {
+            const needsHtml = Boolean(htmlBody && !prev.messageHtml)
+            const needsUid = !prev.imapUid && Boolean(msg.uid)
+            if (needsHtml || needsUid) {
+              all[existingIdx] = {
+                ...prev,
+                message: needsHtml ? (textBody || prev.message) : prev.message,
+                messageHtml: needsHtml ? htmlBody : prev.messageHtml,
+                attachments: prev.attachments?.length ? prev.attachments : (attachments.length ? attachments : undefined),
+                imapUid: prev.imapUid || msg.uid,
+                imapMailbox: prev.imapMailbox || imap.mailbox,
+              }
+              await saveMessages(all)
+            }
+          }
+          skipped++
+          continue
+        }
+
         if (knownIds.has(emailMessageId)) {
           skipped++
           continue
@@ -165,33 +221,21 @@ export async function syncInboxToMessages(limit = 50): Promise<ImapSyncResult> {
           ? new Date(envelope.date).toISOString()
           : new Date().toISOString()
 
-        const record: Omit<ContactMessage, 'id' | 'read' | 'createdAt'> & {
-          emailMessageId: string
-          source: 'email'
-          createdAt?: string
-        } = {
+        const messages = await getMessages()
+
+        const entry: ContactMessage = {
           name: from.name,
           email: from.email,
           subject,
-          message: textBody || '(Contenu du message non lisible en texte)',
-          source: 'email',
-          emailMessageId,
-        }
-
-        // Insertion manuelle pour conserver la date d'origine du mail
-        const messages = await getMessages()
-        if (messages.some(m => m.emailMessageId === emailMessageId)) {
-          skipped++
-          continue
-        }
-
-        const entry: ContactMessage = {
-          ...record,
+          message: textBody || '(Contenu du message non lisible)',
+          messageHtml: htmlBody || undefined,
           id: `email-${Date.now()}-${msg.uid}`,
           read: false,
           createdAt,
           source: 'email',
           emailMessageId,
+          imapUid: msg.uid,
+          imapMailbox: imap.mailbox,
           attachments: attachments.length ? attachments : undefined,
         }
         messages.unshift(entry)
@@ -219,4 +263,137 @@ export async function syncInboxToMessages(limit = 50): Promise<ImapSyncResult> {
     }
     return { configured: true, imported, skipped, totalFetched, error: err }
   }
+}
+
+function normalizeMessageId(id: string) {
+  return id.trim().replace(/^<|>$/g, '')
+}
+
+export type ImapDeleteResult = {
+  deleted: boolean
+  /** Message déjà absent côté serveur (OK pour poursuivre la suppression locale) */
+  notFound?: boolean
+  error?: string
+}
+
+/**
+ * Supprime un mail sur Hostinger (IMAP) via UID ou Message-ID.
+ * Expunge immédiat pour qu’il disparaisse vraiment de la boîte.
+ */
+export async function deleteRemoteEmail(options: {
+  imapUid?: number
+  emailMessageId?: string
+  mailbox?: string
+}): Promise<ImapDeleteResult> {
+  const imap = getImapConfig()
+  if (!imap) {
+    return { deleted: false, error: 'IMAP non configuré' }
+  }
+
+  const mailbox = (options.mailbox || imap.mailbox).trim() || imap.mailbox
+  let uid = options.imapUid && Number.isFinite(options.imapUid) ? Number(options.imapUid) : undefined
+
+  if (!uid && options.emailMessageId?.startsWith('imap-uid-')) {
+    const parsed = Number(options.emailMessageId.slice('imap-uid-'.length))
+    if (Number.isFinite(parsed)) uid = parsed
+  }
+
+  const client = new ImapFlow({
+    host: imap.host,
+    port: imap.port,
+    secure: imap.secure,
+    auth: {
+      user: imap.user,
+      pass: imap.pass,
+    },
+    logger: false,
+  })
+
+  try {
+    await client.connect()
+    const lock = await client.getMailboxLock(mailbox)
+
+    try {
+      if (!uid && options.emailMessageId) {
+        const raw = options.emailMessageId.trim()
+        const bare = normalizeMessageId(raw)
+        const candidates = Array.from(new Set([
+          raw,
+          bare,
+          bare ? `<${bare}>` : '',
+        ].filter(Boolean)))
+
+        for (const candidate of candidates) {
+          const found = await client.search(
+            { header: { 'message-id': candidate } },
+            { uid: true },
+          )
+          if (Array.isArray(found) && found.length) {
+            uid = found[0]
+            break
+          }
+        }
+      }
+
+      if (!uid) {
+        return { deleted: false, notFound: true, error: 'Message introuvable sur Hostinger' }
+      }
+
+      const ok = await client.messageDelete(String(uid), { uid: true })
+      if (!ok) {
+        return { deleted: false, notFound: true, error: 'Message déjà absent sur Hostinger' }
+      }
+      return { deleted: true }
+    }
+    finally {
+      lock.release()
+    }
+  }
+  catch (error) {
+    const err = error instanceof Error ? error.message : 'Erreur IMAP inconnue'
+    console.error('[imap] Delete failed:', err)
+    return { deleted: false, error: err }
+  }
+  finally {
+    try {
+      await client.logout()
+    }
+    catch {
+      // ignore
+    }
+  }
+}
+
+/** Sync IMAP au plus une fois toutes les N secondes (rafraîchissement page / polling). */
+let lastAutoSyncAt = 0
+let autoSyncInFlight: Promise<ImapSyncResult | null> | null = null
+
+export async function syncInboxIfDue(options?: {
+  force?: boolean
+  throttleMs?: number
+  limit?: number
+}): Promise<ImapSyncResult | null> {
+  if (!isImapConfigured()) return null
+
+  const force = options?.force === true
+  const throttleMs = options?.throttleMs ?? 20_000
+  const now = Date.now()
+
+  if (!force && now - lastAutoSyncAt < throttleMs) {
+    return null
+  }
+
+  if (autoSyncInFlight) return autoSyncInFlight
+
+  autoSyncInFlight = (async () => {
+    lastAutoSyncAt = Date.now()
+    try {
+      return await syncInboxToMessages(options?.limit ?? 50)
+    }
+    finally {
+      autoSyncInFlight = null
+    }
+  })()
+
+  return autoSyncInFlight
 }

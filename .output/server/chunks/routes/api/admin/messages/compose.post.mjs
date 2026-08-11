@@ -1,4 +1,4 @@
-import { c as defineEventHandler, r as readBody, e as createError, m as addMessage, l as updateMessage } from '../../../../_/nitro.mjs';
+import { c as defineEventHandler, r as readBody, e as createError, n as addMessage, m as updateMessage } from '../../../../_/nitro.mjs';
 import { r as requireAdmin } from '../../../../_/auth.mjs';
 import { A as ATTACHMENT_LIMITS } from '../../../../_/attachments.mjs';
 import { i as isMailConfigured, s as sendOutboundMail } from '../../../../_/mail.mjs';
@@ -12,6 +12,7 @@ import 'node:crypto';
 import 'node:fs/promises';
 import 'node:url';
 import 'nodemailer';
+import '../../../../_/sanitizeHtml.mjs';
 
 const compose_post = defineEventHandler(async (event) => {
   var _a, _b, _c, _d;
@@ -55,16 +56,13 @@ const compose_post = defineEventHandler(async (event) => {
     subject,
     message,
     source: "outbound",
-    reply: message,
     replyStatus: sendEmail ? "sent" : "draft",
-    replyAttachments: attachments.length ? attachments : void 0
+    attachments: attachments.length ? attachments : void 0
   });
   const updated = await updateMessage(saved.id, {
     read: true,
-    reply: message,
     repliedAt: (/* @__PURE__ */ new Date()).toISOString(),
-    replyStatus: sendEmail ? "sent" : "draft",
-    replyAttachments: attachments.length ? attachments : void 0
+    replyStatus: sendEmail ? "sent" : "draft"
   });
   return {
     message: updated || saved,

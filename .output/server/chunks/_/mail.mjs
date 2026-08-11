@@ -1,7 +1,9 @@
-import { u as useRuntimeConfig } from './nitro.mjs';
+import { u as useRuntimeConfig, L as oxynovaContent } from './nitro.mjs';
 import nodemailer from 'nodemailer';
 import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { a as absoluteUploadPath } from './attachments.mjs';
+import { s as sanitizeEmailHtml, h as htmlToPlainPreview } from './sanitizeHtml.mjs';
 
 function getSmtpConfig() {
   var _a;
@@ -29,6 +31,90 @@ function createTransporter(smtp) {
 }
 function escapeHtml(value) {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function ensureLinksOpenInNewTab(html) {
+  return html.replace(/<a\b([^>]*)>/gi, (_full, attrs) => {
+    let next = String(attrs || "");
+    if (!/\btarget\s*=/i.test(next)) next += ' target="_blank"';
+    else {
+      next = next.replace(/\btarget\s*=\s*(['"]).*?\1/gi, 'target="_blank"');
+      next = next.replace(/\btarget\s*=\s*[^\s>]+/gi, 'target="_blank"');
+    }
+    if (!/\brel\s*=/i.test(next)) next += ' rel="noopener noreferrer"';
+    return `<a${next}>`;
+  });
+}
+function getSiteUrl() {
+  const config = useRuntimeConfig();
+  return String(config.public.siteUrl || "https://www.oxynovardc.com").replace(/\/$/, "");
+}
+function getSignatureInfo(siteUrl) {
+  const c = oxynovaContent.contact;
+  return {
+    company: oxynovaContent.fullName,
+    tagline: oxynovaContent.tagline,
+    address: c.address,
+    phone: c.phone,
+    phoneAlt: c.phoneAlt,
+    email: c.email,
+    siteUrl,
+    siteLabel: siteUrl.replace(/^https?:\/\//, "")
+  };
+}
+function buildSignatureText(siteUrl) {
+  const s = getSignatureInfo(siteUrl);
+  return [
+    "",
+    "\u2014",
+    s.company,
+    s.tagline,
+    s.address,
+    `T\xE9l. : ${s.phone}${` / ${s.phoneAlt}` }`,
+    `Email : ${s.email}`,
+    s.siteUrl
+  ].join("\n");
+}
+function buildSignatureHtml(siteUrl) {
+  var _a;
+  const s = getSignatureInfo(siteUrl);
+  const phoneHref = s.phone.replace(/\s+/g, "");
+  const phoneAltHref = ((_a = s.phoneAlt) == null ? void 0 : _a.replace(/\s+/g, "")) || "";
+  return `
+    <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:480px">
+        <tr>
+          <td style="vertical-align:top;padding-right:16px;width:64px">
+            <img src="cid:oxynova-logo" alt="OXYNOVA RDC" width="56" height="56" style="display:block;border:0;border-radius:6px;object-fit:contain" />
+          </td>
+          <td style="vertical-align:top;font-size:13px;line-height:1.5;color:#1a1a1b">
+            <strong style="color:#174794;font-size:14px">${escapeHtml(s.company)}</strong><br />
+            <span style="color:#64748b">${escapeHtml(s.tagline)}</span><br />
+            <span style="color:#475569;display:inline-block;margin-top:6px">${escapeHtml(s.address)}</span><br />
+            <span style="display:inline-block;margin-top:4px">
+              <a href="tel:${escapeHtml(phoneHref)}" style="color:#174794;text-decoration:none">${escapeHtml(s.phone)}</a>
+              ${` <span style="color:#94a3b8">\xB7</span> <a href="tel:${escapeHtml(phoneAltHref)}" style="color:#174794;text-decoration:none">${escapeHtml(s.phoneAlt)}</a>` }
+            </span><br />
+            <a href="mailto:${escapeHtml(s.email)}" style="color:#174794;text-decoration:none">${escapeHtml(s.email)}</a><br />
+            <a href="${escapeHtml(s.siteUrl)}" style="color:#174794;text-decoration:none;font-weight:600">${escapeHtml(s.siteLabel)}</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
+}
+async function logoAttachment() {
+  const logoPath = join(process.cwd(), "public", "images", "logo.png");
+  try {
+    await readFile(logoPath);
+    return {
+      filename: "logo-oxynova.png",
+      path: logoPath,
+      cid: "oxynova-logo",
+      contentType: "image/png"
+    };
+  } catch {
+    return null;
+  }
 }
 async function sendContactNotification(message) {
   const smtp = getSmtpConfig();
@@ -115,22 +201,20 @@ async function sendOutboundMail(input) {
   if (!smtp) {
     return { sent: false, skipped: true };
   }
+  const siteUrl = getSiteUrl();
   const transporter = createTransporter(smtp);
-  const attachments = await toNodemailerAttachments(input.attachments || []);
+  const fileAttachments = await toNodemailerAttachments(input.attachments || []);
+  const logo = await logoAttachment();
   const body = input.body.trim();
-  const text = [
-    body,
-    "",
-    "\u2014",
-    "OXYNOVA RDC SARL",
-    "Ing\xE9nierie biom\xE9dicale \u2014 Kinshasa, RDC"
-  ].join("\n");
+  const looksHtml = /<[a-z][\s\S]*>/i.test(body);
+  const safeHtml = looksHtml ? sanitizeEmailHtml(body) : "";
+  const plain = looksHtml ? htmlToPlainPreview(safeHtml || body, 5e3) : body;
+  const htmlInner = looksHtml ? ensureLinksOpenInNewTab(safeHtml || body) : escapeHtml(body).replace(/\n/g, "<br>");
+  const text = `${plain}${buildSignatureText(siteUrl)}`;
   const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1a1a1b">
-      <div style="white-space:pre-wrap">${escapeHtml(body).replace(/\n/g, "<br>")}</div>
-      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0" />
-      <p style="font-size:13px;color:#174794;font-weight:700;margin:0">OXYNOVA RDC SARL</p>
-      <p style="font-size:12px;color:#666;margin:4px 0 0">Ing\xE9nierie biom\xE9dicale \u2014 Kinshasa, RDC</p>
+    <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:#1a1a1b">
+      <div>${htmlInner}</div>
+      ${buildSignatureHtml(siteUrl)}
     </div>
   `;
   try {
@@ -141,7 +225,10 @@ async function sendOutboundMail(input) {
       subject: input.subject.trim(),
       text,
       html,
-      attachments,
+      attachments: [
+        ...fileAttachments,
+        ...logo ? [logo] : []
+      ],
       headers: input.inReplyTo ? { "In-Reply-To": input.inReplyTo, References: input.inReplyTo } : void 0
     });
     return { sent: true };

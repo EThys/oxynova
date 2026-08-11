@@ -1,4 +1,4 @@
-import { e as createError, u as useRuntimeConfig, H as setCookie, I as deleteCookie, J as getCookie } from './nitro.mjs';
+import { e as createError, u as useRuntimeConfig, I as setCookie, J as deleteCookie, K as getCookie } from './nitro.mjs';
 import { timingSafeEqual, createHmac } from 'node:crypto';
 
 const COOKIE_NAME = "oxynova_admin_session";
@@ -58,7 +58,7 @@ function requireAdmin(event) {
 }
 function checkAdminPassword(event, password) {
   const config = useRuntimeConfig(event);
-  const expected = config.adminPassword || "oxynova2026";
+  const expected = config.adminPassword || "Oxynova2026@";
   if (!password || password.length !== expected.length) {
     return false;
   }

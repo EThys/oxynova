@@ -1,4 +1,4 @@
-import { c as defineEventHandler, r as readBody, e as createError, G as addVideo } from '../../../_/nitro.mjs';
+import { c as defineEventHandler, r as readBody, e as createError, H as addVideo } from '../../../_/nitro.mjs';
 import { r as requireAdmin } from '../../../_/auth.mjs';
 import { e as extractYoutubeId } from '../../../_/admin.mjs';
 import 'node:http';

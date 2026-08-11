@@ -1,87 +1,79 @@
 <template>
-  <div class="admin-shell min-h-screen bg-[#f4f6f9] font-sans text-[#1a1a1b]">
-    <!-- Mobile top bar -->
-    <header class="lg:hidden sticky top-0 z-40 bg-brand-900 text-white px-4 py-3 flex items-center justify-between shadow-lg">
-      <button type="button" class="p-2 -ml-2 rounded-[4px] hover:bg-white/10" aria-label="Menu" @click="sidebarOpen = true">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
-      <span class="font-[900] uppercase tracking-tight text-sm">OXYNOVA Admin</span>
-      <button type="button" class="text-[11px] font-[900] uppercase tracking-wider text-white/70" @click="logout">Sortir</button>
-    </header>
+  <div class="admin-shell min-h-screen bg-[#f3f4f6] font-sans text-slate-900">
+    <header class="admin-navbar sticky top-0 z-40">
+      <div class="admin-navbar__inner">
+        <NuxtLink to="/admin" class="admin-brand" @click="menuOpen = false">
+          <img src="/images/logo.png" alt="OXYNOVA" class="h-7 w-auto object-contain">
+          <span class="font-semibold text-[14px] tracking-tight text-slate-900">OXYNOVA</span>
+          <span class="hidden sm:inline text-slate-300">|</span>
+          <span class="hidden sm:inline text-[12px] font-medium text-slate-500">Admin</span>
+        </NuxtLink>
 
-    <!-- Overlay mobile -->
-    <div
-      v-if="sidebarOpen"
-      class="lg:hidden fixed inset-0 z-40 bg-brand-900/50"
-      @click="sidebarOpen = false"
-    />
+        <nav class="hidden md:flex items-center h-full ml-8 gap-0">
+          <NuxtLink
+            to="/admin"
+            class="admin-tab"
+            :class="{ 'admin-tab--active': route.path === '/admin' }"
+          >
+            Tableau de bord
+          </NuxtLink>
+          <NuxtLink
+            to="/admin/messages"
+            class="admin-tab"
+            :class="{ 'admin-tab--active': route.path.startsWith('/admin/messages') }"
+          >
+            Messagerie
+            <span v-if="unreadBadge > 0" class="admin-badge">{{ unreadBadge > 99 ? '99+' : unreadBadge }}</span>
+          </NuxtLink>
+        </nav>
 
-    <aside
-      class="admin-sidebar fixed inset-y-0 left-0 z-50 w-[280px] bg-brand-900 text-white flex flex-col transition-transform duration-300 lg:translate-x-0"
-      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-    >
-      <div class="px-6 pt-8 pb-6 border-b border-white/10">
-        <div class="flex items-center gap-3">
-          <img src="/images/logo.png" alt="OXYNOVA" class="h-10 w-auto object-contain brightness-0 invert opacity-95">
-          <div class="min-w-0">
-            <p class="font-[900] uppercase tracking-tight text-[15px] leading-none">OXYNOVA</p>
-            <p class="text-[10px] font-[900] uppercase tracking-[0.2em] text-brand-300 mt-1.5">Administration</p>
-          </div>
+        <div class="ml-auto flex items-center gap-1 sm:gap-2">
+          <a href="/" target="_blank" class="admin-link-quiet hidden sm:inline-flex">Voir le site</a>
+          <button type="button" class="admin-link-quiet hidden sm:inline-flex" @click="logout">Déconnexion</button>
+          <button type="button" class="sm:hidden admin-link-quiet !px-2" @click="logout" title="Déconnexion">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+          <button type="button" class="md:hidden p-2 rounded-md text-slate-600 hover:bg-slate-100" aria-label="Menu" @click="menuOpen = !menuOpen">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path v-if="!menuOpen" d="M4 6h16M4 12h16M4 18h16" />
+              <path v-else d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
 
-      <nav class="flex-1 px-4 py-6 space-y-1.5">
-        <p class="px-3 mb-3 text-[10px] font-[900] uppercase tracking-[0.22em] text-white/40">Menu</p>
-        <NuxtLink
-          to="/admin"
-          class="admin-side-link"
-          :class="{ 'admin-side-link--active': route.path === '/admin' }"
-          @click="sidebarOpen = false"
-        >
-          <svg class="w-5 h-5 flex-shrink-0 opacity-80" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 12a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/></svg>
-          <span>Tableau</span>
+      <!-- Overlay menu : n'altère pas la hauteur de la messagerie -->
+      <div
+        v-if="menuOpen"
+        class="md:hidden absolute left-0 right-0 top-full border-t border-slate-200 bg-white px-3 py-2 space-y-1 shadow-lg z-50"
+      >
+        <NuxtLink to="/admin" class="admin-mobile-link" :class="{ 'admin-mobile-link--active': route.path === '/admin' }" @click="menuOpen = false">
+          Tableau de bord
         </NuxtLink>
-        <NuxtLink
-          to="/admin/messages"
-          class="admin-side-link"
-          :class="{ 'admin-side-link--active': route.path.startsWith('/admin/messages') }"
-          @click="sidebarOpen = false"
-        >
-          <svg class="w-5 h-5 flex-shrink-0 opacity-80" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          <span>Messages</span>
-          <span
-            v-if="unreadBadge > 0"
-            class="ml-auto min-w-[1.4rem] h-5 px-1.5 rounded-full bg-brand-500 text-[10px] font-[900] flex items-center justify-center"
-          >
-            {{ unreadBadge > 99 ? '99+' : unreadBadge }}
-          </span>
+        <NuxtLink to="/admin/messages" class="admin-mobile-link" :class="{ 'admin-mobile-link--active': route.path.startsWith('/admin/messages') }" @click="menuOpen = false">
+          Messagerie
+          <span v-if="unreadBadge > 0" class="admin-badge ml-auto">{{ unreadBadge > 99 ? '99+' : unreadBadge }}</span>
         </NuxtLink>
-      </nav>
-
-      <div class="px-4 py-5 border-t border-white/10 space-y-1">
-        <a href="/" target="_blank" class="admin-side-link admin-side-link--muted">
-          <svg class="w-5 h-5 flex-shrink-0 opacity-70" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-          <span>Voir le site</span>
-        </a>
-        <button type="button" class="admin-side-link admin-side-link--muted w-full text-left" @click="logout">
-          <svg class="w-5 h-5 flex-shrink-0 opacity-70" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-          <span>Déconnexion</span>
-        </button>
+        <a href="/" target="_blank" class="admin-mobile-link" @click="menuOpen = false">Voir le site</a>
       </div>
-    </aside>
+    </header>
 
-    <div class="lg:pl-[280px] min-h-screen">
-      <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <slot />
-      </main>
-    </div>
+    <main
+      :class="isMailApp
+        ? 'mail-main h-[calc(100dvh-3.5rem)] overflow-hidden'
+        : 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10'"
+    >
+      <slot />
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute()
 const { logout } = useAdminAuth()
-const sidebarOpen = ref(false)
+const menuOpen = ref(false)
+
+const isMailApp = computed(() => route.path.startsWith('/admin/messages'))
 
 const { data: stats } = await useFetch('/api/admin/stats', {
   key: 'admin-stats',
@@ -90,19 +82,41 @@ const { data: stats } = await useFetch('/api/admin/stats', {
 
 const unreadBadge = computed(() => Number((stats.value as { unread?: number })?.unread || 0))
 
-watch(() => route.path, () => { sidebarOpen.value = false })
+watch(() => route.path, () => { menuOpen.value = false })
 
 useAdminSeo('Administration')
 </script>
 
 <style scoped>
-.admin-side-link {
-  @apply flex items-center gap-3 px-3 py-3 rounded-[4px] text-[13px] font-[900] uppercase tracking-wider text-white/60 hover:text-white hover:bg-white/10 transition-colors;
+.admin-navbar {
+  @apply relative bg-white border-b border-slate-200;
 }
-.admin-side-link--active {
-  @apply text-white bg-white/10 shadow-inner;
+.admin-navbar__inner {
+  @apply flex items-center gap-3 px-4 sm:px-6 h-14;
 }
-.admin-side-link--muted {
-  @apply text-white/50 hover:text-white/90;
+.admin-brand {
+  @apply flex items-center gap-2.5 min-w-0;
+}
+.admin-tab {
+  @apply relative inline-flex items-center gap-2 h-14 px-4 text-[13px] font-medium text-slate-500 hover:text-slate-900 transition-colors;
+}
+.admin-tab--active {
+  @apply text-brand-800;
+}
+.admin-tab--active::after {
+  content: '';
+  @apply absolute left-3 right-3 bottom-0 h-0.5 bg-brand-700 rounded-full;
+}
+.admin-badge {
+  @apply min-w-[1.15rem] h-[1.15rem] px-1 rounded-full bg-brand-700 text-white text-[10px] font-semibold inline-flex items-center justify-center;
+}
+.admin-link-quiet {
+  @apply text-[12px] font-medium text-slate-500 hover:text-slate-900 px-2.5 py-1.5 rounded-md hover:bg-slate-100 transition-colors;
+}
+.admin-mobile-link {
+  @apply flex items-center px-3 py-2.5 rounded-md text-[13px] font-medium text-slate-600 hover:bg-slate-50;
+}
+.admin-mobile-link--active {
+  @apply bg-brand-50 text-brand-800;
 }
 </style>

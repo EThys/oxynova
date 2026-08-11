@@ -1,5 +1,5 @@
 import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { toRef, isRef, hasInjectionContext, inject, getCurrentInstance, useSSRContext, defineAsyncComponent, defineComponent, h, computed, unref, shallowRef, provide, shallowReactive, ref, Suspense, Fragment, createApp, withCtx, createVNode, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, reactive, effectScope, nextTick, mergeProps, getCurrentScope, isReadonly, isShallow, isReactive, toRaw } from 'vue';
-import { e as createError$1, Q as hasProtocol, R as isScriptProtocol, S as joinURL, T as withQuery, U as sanitizeStatusCode, V as getContext, $ as $fetch, W as createHooks, X as executeAsync, Y as toRouteMatcher, Z as createRouter$1, _ as defu } from '../_/nitro.mjs';
+import { e as createError$1, S as hasProtocol, T as isScriptProtocol, U as joinURL, V as withQuery, W as sanitizeStatusCode, X as getContext, $ as $fetch, Y as createHooks, Z as executeAsync, _ as toRouteMatcher, a0 as createRouter$1, a1 as defu } from '../_/nitro.mjs';
 import { u as useSeoMeta$1, p as publicAssetsURL, a as useHead$1, h as headSymbol, b as baseURL } from '../routes/renderer.mjs';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
 import { ssrRenderTeleport, ssrRenderAttr, ssrRenderAttrs, ssrRenderComponent, ssrRenderSuspense, ssrRenderVNode } from 'vue/server-renderer';
@@ -435,7 +435,7 @@ const _routes = [
     name: "admin",
     path: "/admin",
     meta: { ...__nuxt_page_meta$a || {}, ...{ "middleware": "admin" } },
-    component: () => import('./index-B23Ogt_Z.mjs')
+    component: () => import('./index-DytzYKV8.mjs')
   },
   {
     name: "admin-login",
@@ -452,7 +452,7 @@ const _routes = [
     name: "admin-messages",
     path: "/admin/messages",
     meta: { ...__nuxt_page_meta$8 || {}, ...{ "middleware": "admin" } },
-    component: () => import('./messages-DeqJ2tp7.mjs')
+    component: () => import('./messages-8VQCYI25.mjs')
   },
   {
     name: "admin-equipe-id",
@@ -929,7 +929,7 @@ _sfc_main$3.setup = (props, ctx) => {
 };
 const __nuxt_component_0 = /* @__PURE__ */ Object.assign(_export_sfc(_sfc_main$3, [["__scopeId", "data-v-a711501b"]]), { __name: "SiteLoader" });
 const layouts = {
-  admin: defineAsyncComponent(() => import('./admin-DSZlKtqI.mjs').then((m) => m.default || m)),
+  admin: defineAsyncComponent(() => import('./admin-D1BZzYx7.mjs').then((m) => m.default || m)),
   default: defineAsyncComponent(() => import('./default-CrRp1yMs.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
