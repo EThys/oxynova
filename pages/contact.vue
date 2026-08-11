@@ -153,7 +153,7 @@ async function handleSubmit() {
   }
 }
 
-useHead({ title: 'Contact | OXYNOVA RDC SARL' })
+usePageSeo('contact')
 </script>
 
 <style scoped>

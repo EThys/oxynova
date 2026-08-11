@@ -22,12 +22,34 @@
         >
           <img
             :src="member.image"
-            alt="Membre de l'équipe OXYNOVA"
+            :alt="member.name || 'Membre de l\'équipe OXYNOVA'"
             class="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-110"
             loading="lazy"
           >
-          <div class="absolute inset-0 bg-brand-900/0 group-hover:bg-brand-900/20 transition-colors duration-500" />
-          <span class="absolute bottom-4 right-4 text-white/90 text-[10px] font-[900] uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+          <div
+            class="absolute inset-0 transition-colors duration-500"
+            :class="member.name
+              ? 'bg-gradient-to-t from-brand-900/85 via-brand-900/20 to-transparent'
+              : 'bg-brand-900/0 group-hover:bg-brand-900/20'"
+          />
+          <div
+            v-if="member.name"
+            class="absolute inset-x-0 bottom-0 p-4 sm:p-5"
+          >
+            <p
+              v-if="member.role"
+              class="text-brand-300 text-[10px] sm:text-[11px] font-[900] uppercase tracking-[0.18em] mb-1.5"
+            >
+              {{ member.role }}
+            </p>
+            <p class="text-white text-[14px] sm:text-[15px] font-[900] uppercase tracking-tight leading-snug">
+              {{ member.name }}
+            </p>
+          </div>
+          <span
+            v-else
+            class="absolute bottom-4 right-4 text-white/90 text-[10px] font-[900] uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity"
+          >
             Agrandir
           </span>
         </button>

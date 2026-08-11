@@ -122,5 +122,5 @@ function onKey(e: KeyboardEvent) {
 onMounted(() => window.addEventListener('keydown', onKey))
 onUnmounted(() => window.removeEventListener('keydown', onKey))
 
-useHead({ title: 'Médias | OXYNOVA RDC SARL' })
+usePageSeo('medias')
 </script>

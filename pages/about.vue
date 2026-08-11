@@ -134,5 +134,5 @@ import { initScrollReveal } from '~/composables/useScrollObserver'
 
 onMounted(() => nextTick(() => initScrollReveal()))
 
-useHead({ title: 'À propos | OXYNOVA RDC SARL' })
+usePageSeo('about')
 </script>

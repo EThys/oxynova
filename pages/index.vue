@@ -13,7 +13,5 @@
 </template>
 
 <script setup lang="ts">
-useHead({
-  title: 'OXYNOVA RDC SARL | Ingénierie biomédicale',
-})
+usePageSeo('home')
 </script>

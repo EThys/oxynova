@@ -24,7 +24,16 @@ export default defineEventHandler(async (event) => {
     company: body.company?.trim() || undefined,
     subject: body.subject.trim(),
     message: body.message.trim(),
+    source: 'web',
   })
 
-  return { success: true, id: message.id }
+  // Email Hostinger si SMTP configuré — sinon le message reste quand même en admin
+  const mail = await sendContactNotification(message)
+
+  return {
+    success: true,
+    id: message.id,
+    mailSent: mail.sent,
+    mailSkipped: Boolean(mail.skipped),
+  }
 })

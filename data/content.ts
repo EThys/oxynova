@@ -239,8 +239,8 @@ export const oxynovaContent = {
   ],
   team: [
     {
-      name: '',
-      role: '',
+      name: 'NTUMBA MUKUNA Joelle',
+      role: 'Directrice générale',
       department: '',
       bio: '',
       image: '/images/directrice.jpg',

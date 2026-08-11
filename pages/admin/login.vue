@@ -73,7 +73,7 @@ async function handleLogin() {
   }
 }
 
-useHead({ title: 'Connexion Admin - OXYNOVA RDC SARL' })
+useAdminSeo('Connexion Admin')
 </script>
 
 <style scoped>

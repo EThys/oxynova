@@ -50,6 +50,7 @@ export async function addMessage(
     ...input,
     id: generateId(),
     read: false,
+    source: input.source || 'web',
     createdAt: new Date().toISOString(),
   }
   messages.unshift(message)
@@ -59,7 +60,7 @@ export async function addMessage(
 
 export async function updateMessage(
   id: string,
-  patch: Partial<Pick<ContactMessage, 'read' | 'reply' | 'repliedAt'>>,
+  patch: Partial<Pick<ContactMessage, 'read' | 'reply' | 'repliedAt' | 'replyStatus' | 'replyAttachments'>>,
 ): Promise<ContactMessage | null> {
   const messages = await getMessages()
   const index = messages.findIndex(m => m.id === id)

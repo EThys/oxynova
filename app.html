@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html {{ HTML_ATTRS }}>
+  <head {{ HEAD_ATTRS }}>
+    <!-- CSS critique en premier : avant tout CSS/JS Vite — bloque le FOUC -->
+    <style>
+      html,body{margin:0;background:#fff;color:#111827;font-family:Outfit,system-ui,-apple-system,sans-serif}
+      body.site-loading{overflow:hidden}
+      #site-boot{
+        position:fixed;inset:0;z-index:2147483646;
+        display:flex;align-items:center;justify-content:center;
+        background:#fff;
+      }
+      #site-boot .site-boot__inner{position:relative;display:flex;align-items:center;justify-content:center;padding:0 1.5rem}
+      #site-boot .site-boot__logo{position:relative;z-index:1;height:3.5rem;width:auto;object-fit:contain}
+      @media (min-width:640px){#site-boot .site-boot__logo{height:4rem}}
+      #site-boot .site-boot__spinner{position:absolute;width:9.5rem;height:9.5rem}
+      @media (min-width:640px){#site-boot .site-boot__spinner{width:11rem;height:11rem}}
+      #site-boot .site-boot__ring{
+        position:absolute;inset:0;border-radius:9999px;
+        border:2.5px solid rgb(23 71 148 / 0.12);
+        border-top-color:#174794;
+        border-right-color:rgb(47 125 225 / 0.45);
+        animation:site-boot-spin .85s linear infinite;
+      }
+      @keyframes site-boot-spin{to{transform:rotate(360deg)}}
+      @media (prefers-reduced-motion:reduce){
+        #site-boot .site-boot__ring{animation:none;opacity:.7}
+        #site-boot.is-done{filter:none;transform:none;transition:opacity .25s ease}
+      }
+    </style>
+    <link rel="preload" as="image" href="/images/about-one.jpg" fetchpriority="high">
+    {{ HEAD }}
+  </head>
+  <body {{ BODY_ATTRS }}>
+    <!-- Démarre le téléchargement pendant l'écran blanc (cache navigateur pour le hero) -->
+    <img src="/images/about-one.jpg" alt="" width="1" height="1" decoding="async" fetchpriority="high" aria-hidden="true" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none">
+    <div id="site-boot" role="status" aria-live="polite" aria-busy="true" aria-label="Chargement du site">
+      <div class="site-boot__inner">
+        <div class="site-boot__spinner" aria-hidden="true"><span class="site-boot__ring"></span></div>
+        <img class="site-boot__logo" src="/images/logo.png" alt="OXYNOVA RDC SARL" width="120" height="64">
+      </div>
+    </div>
+    {{ APP }}
+    <script>
+      setTimeout(function () {
+        document.documentElement.classList.add('site-ready')
+        var boot = document.getElementById('site-boot')
+        if (boot) boot.remove()
+      }, 4500)
+    </script>
+  </body>
+</html>

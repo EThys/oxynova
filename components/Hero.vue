@@ -7,11 +7,8 @@
         width="1600"
         height="1067"
         fetchpriority="high"
-        decoding="async"
-        class="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500"
-        :class="heroReady ? 'opacity-100' : 'opacity-0'"
-        @load="heroReady = true"
-        @error="heroReady = true"
+        decoding="sync"
+        class="absolute inset-0 w-full h-full object-cover object-center"
       >
       <div class="absolute inset-0 bg-brand-900/55 sm:bg-gradient-to-r sm:from-brand-900/85 sm:via-brand-900/55 sm:to-brand-900/25" />
     </div>
@@ -39,24 +36,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-const heroReady = ref(false)
-
-onMounted(() => {
-  // Cached image may already be complete before @load fires
-  const img = document.querySelector<HTMLImageElement>('img[src="/images/about-one.jpg"]')
-  if (img?.complete && img.naturalWidth > 0) heroReady.value = true
-})
-
-useHead({
-  link: [
-    {
-      rel: 'preload',
-      as: 'image',
-      href: '/images/about-one.jpg',
-      fetchpriority: 'high',
-    },
-  ],
-})
-</script>

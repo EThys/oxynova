@@ -66,5 +66,5 @@
 <script setup lang="ts">
 import { oxynovaContent } from '~/data/content'
 
-useHead({ title: 'Services | OXYNOVA RDC SARL' })
+usePageSeo('services')
 </script>

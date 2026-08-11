@@ -46,6 +46,16 @@ export interface VideoItem {
   updatedAt: string
 }
 
+export interface MessageAttachment {
+  id: string
+  /** Nom d'origine affiché */
+  filename: string
+  /** Chemin public ex. /uploads/mail/xxx.pdf */
+  url: string
+  size: number
+  contentType: string
+}
+
 export interface ContactMessage {
   id: string
   name: string
@@ -57,7 +67,36 @@ export interface ContactMessage {
   read: boolean
   reply?: string
   repliedAt?: string
+  /** none = pas de réponse, draft = brouillon, sent = réponse envoyée */
+  replyStatus?: 'none' | 'draft' | 'sent'
   createdAt: string
+  /** Origine : formulaire site, boîte mail IMAP, ou message sortant admin */
+  source?: 'web' | 'email' | 'outbound'
+  /** Message-ID IMAP pour éviter les doublons */
+  emailMessageId?: string
+  /** Pièces jointes reçues */
+  attachments?: MessageAttachment[]
+  /** Pièces jointes de la réponse admin */
+  replyAttachments?: MessageAttachment[]
+}
+
+export type MessageFilterStatus = 'all' | 'unread' | 'read' | 'draft' | 'sent'
+
+export function getMessageStatus(m: ContactMessage): Exclude<MessageFilterStatus, 'all'> {
+  if (m.replyStatus === 'sent') return 'sent'
+  if (m.replyStatus === 'draft') return 'draft'
+  // Compat anciens messages
+  if (m.reply?.trim()) return 'sent'
+  if (!m.read) return 'unread'
+  return 'read'
+}
+
+export const MESSAGE_STATUS_LABELS: Record<MessageFilterStatus, string> = {
+  all: 'Tous',
+  unread: 'Non lus',
+  read: 'Lus',
+  draft: 'Brouillons',
+  sent: 'Envoyés',
 }
 
 export type RealizationInput = Omit<Realization, 'id' | 'createdAt' | 'updatedAt'>

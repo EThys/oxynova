@@ -32,5 +32,5 @@
 </template>
 
 <script setup lang="ts">
-useHead({ title: 'Organisation | OXYNOVA RDC SARL' })
+usePageSeo('organisation')
 </script>
