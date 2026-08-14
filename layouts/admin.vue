@@ -25,6 +25,13 @@
             Messagerie
             <span v-if="unreadBadge > 0" class="admin-badge">{{ unreadBadge > 99 ? '99+' : unreadBadge }}</span>
           </NuxtLink>
+          <NuxtLink
+            to="/admin/audit"
+            class="admin-tab"
+            :class="{ 'admin-tab--active': route.path.startsWith('/admin/audit') }"
+          >
+            Journal
+          </NuxtLink>
         </nav>
 
         <div class="ml-auto flex items-center gap-1 sm:gap-2">
@@ -53,6 +60,9 @@
         <NuxtLink to="/admin/messages" class="admin-mobile-link" :class="{ 'admin-mobile-link--active': route.path.startsWith('/admin/messages') }" @click="menuOpen = false">
           Messagerie
           <span v-if="unreadBadge > 0" class="admin-badge ml-auto">{{ unreadBadge > 99 ? '99+' : unreadBadge }}</span>
+        </NuxtLink>
+        <NuxtLink to="/admin/audit" class="admin-mobile-link" :class="{ 'admin-mobile-link--active': route.path.startsWith('/admin/audit') }" @click="menuOpen = false">
+          Journal d’activité
         </NuxtLink>
         <a href="/" target="_blank" class="admin-mobile-link" @click="menuOpen = false">Voir le site</a>
       </div>

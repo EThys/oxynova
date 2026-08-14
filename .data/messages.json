@@ -1,43 +1,56 @@
 [
   {
-    "name": "Babi Lomba",
-    "email": "babilomba3@gmail.com",
-    "subject": "Mariage",
-    "message": "Teste la solution",
-    "messageHtml": "<div dir=\"auto\">Teste la solution </div>",
-    "id": "email-1786447039497-5",
-    "read": true,
-    "createdAt": "2026-08-11T11:16:52.000Z",
+    "name": "Jean Fidele Ilunga",
+    "email": "jeanfideleilunga0@gmail.com",
+    "subject": "PRIERE",
+    "message": "Que le Seigneur Jésus-Christ bénisse OXYNOVA RDC SARL.\nQue le Seigneur Jésus-Christ fasse de OXYNOVA RDC SARL une entreprise\nmerveilleusement rayonnante en RDC et ailleurs.\nQue OXYNOVA RDC SARL soit UN GRAND NOM .\nAmen",
+    "messageHtml": "<div dir=\"auto\">Que le Seigneur Jésus-Christ bénisse OXYNOVA RDC SARL. <div dir=\"auto\">Que le Seigneur Jésus-Christ fasse de OXYNOVA RDC SARL une entreprise merveilleusement rayonnante en RDC et ailleurs. </div><div dir=\"auto\">Que OXYNOVA RDC SARL soit UN GRAND NOM . </div><div dir=\"auto\">Amen </div></div>",
+    "id": "email-1786702249019-11",
+    "read": false,
+    "createdAt": "2026-08-13T14:50:05.000Z",
     "source": "email",
-    "emailMessageId": "<CAL6=SXZ9VeD6tTAhA6t492gsjBnSSWR4-BX5egnSA-ncxHrz_Q@mail.gmail.com>",
-    "attachments": [
-      {
-        "id": "93e6c69c-4af",
-        "filename": "fuel_logs_export_a (10).xlsx",
-        "url": "/uploads/mail/1786447039460-fd7f172f.xlsx",
-        "size": 8139,
-        "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      },
-      {
-        "id": "65ac8198-22c",
-        "filename": "carte.pdf",
-        "url": "/uploads/mail/1786447039475-9ab80bef.pdf",
-        "size": 228191,
-        "contentType": "application/pdf"
-      },
-      {
-        "id": "fc879e63-41e",
-        "filename": "IMG-20260811-WA0020.jpeg",
-        "url": "/uploads/mail/1786447039480-f9509b0e.jpg",
-        "size": 3480224,
-        "contentType": "image/jpeg"
-      }
-    ],
-    "reply": "<p>Bonjour Babi,</p><p>Merci pour votre message.</p><p>Bien cordialement,<br>L'équipe OXYNOVA RDC</p>",
-    "repliedAt": "2026-08-11T11:18:03.275Z",
-    "replyStatus": "sent",
-    "imapUid": 5,
+    "emailMessageId": "<CALt7E3XS8-KTOBaBw6zNzYeKKjP88_rssKvWxKXLoy7Xrihizg@mail.gmail.com>",
+    "imapUid": 11,
     "imapMailbox": "INBOX"
+  },
+  {
+    "name": "EThberg Muzola",
+    "email": "ethbergmuzola500@gmail.com",
+    "subject": "Ceci est un test",
+    "message": "Test",
+    "messageHtml": "<div dir=\"auto\">Test</div>",
+    "id": "email-1786623464395-8",
+    "read": false,
+    "createdAt": "2026-08-13T10:19:46.000Z",
+    "source": "email",
+    "emailMessageId": "<CAB=C8ABoOMgXgXH34BHNyzT2u92RpPkLraLZXWyxo_LCXcrxLQ@mail.gmail.com>",
+    "imapUid": 8,
+    "imapMailbox": "INBOX"
+  },
+  {
+    "name": "Ivor Sarson",
+    "email": "rtmzhgi5677@outlook.com",
+    "subject": "OXYNOVA RDC SARL et le digital santé",
+    "message": "Bonjour OXYNOVA RDC SARL, j'ai vu que vous proposez des solutions de digitalisation des services hospitaliers. Je pense que je pourrais vous aider à améliorer l'expérience patient et l'efficacité opérationnelle grâce à mes services en développement d'applications mobiles. Qu'en pensez-vous ?\n\nPranab",
+    "id": "email-1786623464356-7",
+    "read": false,
+    "createdAt": "2026-08-13T00:38:09.000Z",
+    "source": "email",
+    "emailMessageId": "<DM8PR12MB541333F7F44C25DA78737423A8DB2@DM8PR12MB5413.namprd12.prod.outlook.com>",
+    "imapUid": 7,
+    "imapMailbox": "INBOX"
+  },
+  {
+    "name": "Ethberg Matondo Muzola",
+    "email": "ethbergmuzola500@gmail.com",
+    "phone": "+243854434602",
+    "company": "Muzola",
+    "subject": "devis",
+    "message": "Mbote",
+    "source": "web",
+    "id": "1786467139652-omkpw9n",
+    "read": true,
+    "createdAt": "2026-08-11T16:52:19.652Z"
   },
   {
     "name": "Muzola",

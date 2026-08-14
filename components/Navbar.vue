@@ -188,7 +188,15 @@
 
             <div class="p-6 border-t border-gray-100 bg-brand-50/60 space-y-4">
               <a :href="`tel:${oxynovaContent.contact.phone.replace(/\s/g, '')}`" class="block text-brand-700 font-bold text-sm">
-                {{ oxynovaContent.contact.phone }}
+                Appels {{ oxynovaContent.contact.phone }}
+              </a>
+              <a
+                :href="`https://wa.me/${oxynovaContent.contact.whatsapp}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block text-brand-700 font-bold text-sm"
+              >
+                WhatsApp {{ oxynovaContent.contact.phoneAlt }}
               </a>
               <nuxt-link
                 to="/contact"

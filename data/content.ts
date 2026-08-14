@@ -57,7 +57,7 @@ export const oxynovaContent = {
     idNat: '01-39502-N00001C',
     taxId: 'A2625404S',
   },
-  headquarters: '3ème rue Limeté résidentiel, sur Révolution, 811b, Kinshasa-RDC',
+  headquarters: 'Immeuble du 30 juin, 5ème niveau, Appartement A2, Boulevard du 30 juin, arrêt poste, Kinshasa/Gombe',
   hours: {
     weekdays: 'Lundi – Vendredi : 09h00 – 16h00',
     saturday: '',
@@ -268,10 +268,10 @@ export const oxynovaContent = {
   ],
   contact: {
     email: 'contact@oxynovardc.com',
-    phone: '+243 850 176 561',
-    phoneAlt: '+243 893 295 763',
-    address: '3ème rue Limeté résidentiel, sur Révolution, 811b, Kinshasa-RDC',
-    whatsapp: '243850176561',
+    phone: '+243 830 763 114',
+    phoneAlt: '+243 992 458 687',
+    address: 'Immeuble du 30 juin, 5ème niveau, Appartement A2, Boulevard du 30 juin, arrêt poste, Kinshasa/Gombe',
+    whatsapp: '243992458687',
   },
   images: {
     oxygenPlant: '/images/one.jpg',

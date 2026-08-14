@@ -52,6 +52,14 @@ export default defineEventHandler(async (event) => {
     replyAttachments: attachments.length ? attachments : undefined,
   })
 
+  if (sendEmail) {
+    await appendAuditLog(event, {
+      action: 'mail_reply',
+      success: true,
+      detail: `Réponse envoyée → ${message.email} | ${message.subject}`,
+    })
+  }
+
   return {
     message: updated,
     mailSent,

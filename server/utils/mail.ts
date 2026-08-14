@@ -40,6 +40,10 @@ function createTransporter(smtp: SmtpConfig) {
       user: smtp.user,
       pass: smtp.pass,
     },
+    // Évite les 504 Cloudflare/Nginx si Hostinger ne répond pas
+    connectionTimeout: 15_000,
+    greetingTimeout: 15_000,
+    socketTimeout: 25_000,
   })
 }
 
@@ -76,7 +80,8 @@ function getSignatureInfo(siteUrl: string) {
     tagline: oxynovaContent.tagline,
     address: c.address,
     phone: c.phone,
-    phoneAlt: c.phoneAlt,
+    whatsapp: c.phoneAlt,
+    whatsappHref: c.whatsapp,
     email: c.email,
     siteUrl,
     siteLabel: siteUrl.replace(/^https?:\/\//, ''),
@@ -91,7 +96,8 @@ function buildSignatureText(siteUrl: string) {
     s.company,
     s.tagline,
     s.address,
-    `Tél. : ${s.phone}${s.phoneAlt ? ` / ${s.phoneAlt}` : ''}`,
+    `Tél. : ${s.phone}`,
+    `WhatsApp : ${s.whatsapp}`,
     `Email : ${s.email}`,
     s.siteUrl,
   ].join('\n')
@@ -100,7 +106,6 @@ function buildSignatureText(siteUrl: string) {
 function buildSignatureHtml(siteUrl: string) {
   const s = getSignatureInfo(siteUrl)
   const phoneHref = s.phone.replace(/\s+/g, '')
-  const phoneAltHref = s.phoneAlt?.replace(/\s+/g, '') || ''
 
   return `
     <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif">
@@ -114,8 +119,12 @@ function buildSignatureHtml(siteUrl: string) {
             <span style="color:#64748b">${escapeHtml(s.tagline)}</span><br />
             <span style="color:#475569;display:inline-block;margin-top:6px">${escapeHtml(s.address)}</span><br />
             <span style="display:inline-block;margin-top:4px">
+              Appels :
               <a href="tel:${escapeHtml(phoneHref)}" style="color:#174794;text-decoration:none">${escapeHtml(s.phone)}</a>
-              ${s.phoneAlt ? ` <span style="color:#94a3b8">·</span> <a href="tel:${escapeHtml(phoneAltHref)}" style="color:#174794;text-decoration:none">${escapeHtml(s.phoneAlt)}</a>` : ''}
+            </span><br />
+            <span style="display:inline-block;margin-top:2px">
+              WhatsApp :
+              <a href="https://wa.me/${escapeHtml(s.whatsappHref)}" style="color:#174794;text-decoration:none">${escapeHtml(s.whatsapp)}</a>
             </span><br />
             <a href="mailto:${escapeHtml(s.email)}" style="color:#174794;text-decoration:none">${escapeHtml(s.email)}</a><br />
             <a href="${escapeHtml(s.siteUrl)}" style="color:#174794;text-decoration:none;font-weight:600">${escapeHtml(s.siteLabel)}</a>

@@ -50,6 +50,12 @@ export default defineEventHandler(async (event) => {
   const deleted = await deleteMessage(id)
   if (!deleted) throw createError({ statusCode: 404, statusMessage: 'Message introuvable.' })
 
+  await appendAuditLog(event, {
+    action: 'mail_delete',
+    success: true,
+    detail: `${msg.email} | ${msg.subject}${remoteDeleted ? ' (+ Hostinger)' : ''}`,
+  })
+
   return {
     success: true,
     remoteDeleted,

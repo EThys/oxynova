@@ -20,8 +20,10 @@
           RDC SARL
         </h1>
 
-        <p class="text-[15px] sm:text-[17px] text-white/85 mb-8 sm:mb-14 max-w-xl leading-relaxed animate-fade-in-up delay-200 font-medium drop-shadow">
-          Solutions complètes en ingénierie biomédicale : oxygène médical, équipements, infrastructures hospitalières et maintenance professionnelle.
+        <p class="relative text-[15px] sm:text-[17px] text-white/85 mb-8 sm:mb-14 max-w-xl leading-relaxed animate-fade-in-up delay-200 font-medium drop-shadow min-h-[5.5rem] sm:min-h-[5.25rem]">
+          <Transition name="hero-line" mode="out-in">
+            <span :key="lineIndex" class="block">{{ heroLines[lineIndex] }}</span>
+          </Transition>
         </p>
 
         <div class="relative z-10 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 animate-fade-in-up delay-300">
@@ -36,3 +38,49 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const heroLines = [
+  'Solutions complètes en ingénierie biomédicale : oxygène médical, équipements, infrastructures hospitalières et maintenance professionnelle.',
+  'Nous aussi sommes dans la fourniture, l’installation et la maintenance des équipements biomédicaux.',
+  'Nous sommes sur le boulevard du 30 juin, arrêt poste, 5ème niveau, Appartement A2, Kinshasa/Gombe.',
+]
+
+const lineIndex = ref(0)
+let timer: ReturnType<typeof setInterval> | null = null
+
+onMounted(() => {
+  timer = setInterval(() => {
+    lineIndex.value = (lineIndex.value + 1) % heroLines.length
+  }, 4200)
+})
+
+onBeforeUnmount(() => {
+  if (timer) clearInterval(timer)
+})
+</script>
+
+<style scoped>
+.hero-line-enter-active,
+.hero-line-leave-active {
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.hero-line-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.hero-line-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-line-enter-active,
+  .hero-line-leave-active {
+    transition: none;
+  }
+  .hero-line-enter-from,
+  .hero-line-leave-to {
+    transform: none;
+  }
+}
+</style>

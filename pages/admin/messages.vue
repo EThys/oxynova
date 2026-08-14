@@ -475,11 +475,29 @@ const compose = reactive({
 
 const selected = computed(() => messages.value.find(m => m.id === selectedId.value) || null)
 
+const lastViewLoggedId = ref<string | null>(null)
+
+function logMailView(id: string, force = false) {
+  if (!id || (!force && lastViewLoggedId.value === id)) return
+  lastViewLoggedId.value = id
+  const msg = messages.value.find(m => m.id === id)
+  void $fetch('/api/admin/messages/view', { method: 'POST', body: { id } })
+    .then(() => {
+      if (msg && !msg.read && msg.source !== 'outbound') {
+        void refresh().then(() => refreshNuxtData('admin-stats'))
+      }
+    })
+    .catch(() => {
+      if (msg && !msg.read && msg.source !== 'outbound') markAsRead(id)
+    })
+}
+
 watch(messages, (list) => {
   const wanted = typeof route.query.id === 'string' ? route.query.id : null
   if (wanted && list.some(m => m.id === wanted)) {
     selectedId.value = wanted
     mobileReading.value = true
+    logMailView(wanted)
     return
   }
   if (list.length && !list.some(m => m.id === selectedId.value)) {
@@ -612,9 +630,7 @@ function selectMessage(msg: ContactMessage) {
   replySuccess.value = false
   uploadError.value = ''
   router.replace({ query: { ...route.query, id: msg.id } })
-  if (!msg.read && msg.source !== 'outbound') {
-    markAsRead(msg.id)
-  }
+  logMailView(msg.id, true)
 }
 
 function closeMobileReading() {

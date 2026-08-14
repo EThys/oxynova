@@ -29,12 +29,20 @@
               <a :href="`mailto:${oxynovaContent.contact.email}`" class="text-brand-700 font-bold hover:underline">{{ oxynovaContent.contact.email }}</a>
             </div>
             <div>
-              <h3 class="text-[12px] font-[900] uppercase tracking-widest text-brand-700 mb-2">Téléphone</h3>
+              <h3 class="text-[12px] font-[900] uppercase tracking-widest text-brand-700 mb-2">Téléphone (appels)</h3>
               <p class="text-brand-700 font-bold">
                 <a :href="`tel:${oxynovaContent.contact.phone.replace(/\s/g, '')}`" class="hover:underline">{{ oxynovaContent.contact.phone }}</a>
               </p>
-              <p class="text-brand-700 font-bold mt-1">
-                <a :href="`tel:${oxynovaContent.contact.phoneAlt.replace(/\s/g, '')}`" class="hover:underline">{{ oxynovaContent.contact.phoneAlt }}</a>
+            </div>
+            <div>
+              <h3 class="text-[12px] font-[900] uppercase tracking-widest text-brand-700 mb-2">WhatsApp</h3>
+              <p class="text-brand-700 font-bold">
+                <a
+                  :href="`https://wa.me/${oxynovaContent.contact.whatsapp}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="hover:underline"
+                >{{ oxynovaContent.contact.phoneAlt }}</a>
               </p>
             </div>
             <div>

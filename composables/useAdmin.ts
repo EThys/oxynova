@@ -18,8 +18,8 @@ export function useAdminAuth() {
     }
   }
 
-  async function login(password: string) {
-    await $fetch('/api/auth/login', { method: 'POST', body: { password } })
+  async function login(password: string, clientInfo?: Record<string, unknown>) {
+    await $fetch('/api/auth/login', { method: 'POST', body: { password, clientInfo } })
     authenticated.value = true
   }
 

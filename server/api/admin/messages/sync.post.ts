@@ -13,11 +13,22 @@ export default defineEventHandler(async (event) => {
   const result = await syncInboxToMessages(limit)
 
   if (result.error) {
+    await appendAuditLog(event, {
+      action: 'mail_sync',
+      success: false,
+      detail: result.error,
+    })
     throw createError({
       statusCode: 502,
       statusMessage: `Échec sync IMAP : ${result.error}`,
     })
   }
+
+  await appendAuditLog(event, {
+    action: 'mail_sync',
+    success: true,
+    detail: `Importés: ${result.imported}, ignorés: ${result.skipped}, lus: ${result.totalFetched}`,
+  })
 
   return result
 })

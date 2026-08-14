@@ -8,7 +8,7 @@
     <div v-if="pending" class="text-gray-500 font-medium">Chargement...</div>
 
     <template v-else>
-      <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-8">
+      <div class="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4 mb-8">
         <NuxtLink to="/admin/messages" class="dash-card">
           <span class="dash-label">Total</span>
           <span class="dash-value">{{ stats?.total ?? 0 }}</span>
@@ -28,6 +28,11 @@
         <NuxtLink to="/admin/messages?status=sent" class="dash-card">
           <span class="dash-label">Envoyés</span>
           <span class="dash-value text-emerald-600">{{ stats?.sent ?? 0 }}</span>
+        </NuxtLink>
+        <NuxtLink to="/admin/audit" class="dash-card">
+          <span class="dash-label">Sécurité</span>
+          <span class="dash-value text-slate-700 text-lg sm:text-xl">Journal</span>
+          <span class="block text-[11px] text-slate-400 mt-1">Connexions & actions</span>
         </NuxtLink>
       </div>
 

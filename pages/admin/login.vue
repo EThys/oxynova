@@ -58,11 +58,31 @@ onMounted(async () => {
   }
 })
 
+async function collectClientInfo() {
+  if (!import.meta.client) return undefined
+  const nav = navigator as Navigator & { deviceMemory?: number; hardwareConcurrency?: number }
+  return {
+    screen: `${window.screen.width}x${window.screen.height}`,
+    viewport: `${window.innerWidth}x${window.innerHeight}`,
+    pixelRatio: window.devicePixelRatio || 1,
+    language: navigator.language,
+    languages: Array.isArray(navigator.languages) ? navigator.languages.join(',') : navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    platform: navigator.platform || (nav as { userAgentData?: { platform?: string } }).userAgentData?.platform || '',
+    cores: nav.hardwareConcurrency || undefined,
+    memoryGb: nav.deviceMemory || undefined,
+    touch: navigator.maxTouchPoints > 0 || 'ontouchstart' in window,
+    online: navigator.onLine,
+    cookieEnabled: navigator.cookieEnabled,
+  }
+}
+
 async function handleLogin() {
   error.value = ''
   loading.value = true
   try {
-    await login(password.value)
+    const clientInfo = await collectClientInfo()
+    await login(password.value, clientInfo)
     await navigateTo('/admin')
   }
   catch {

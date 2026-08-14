@@ -33,6 +33,29 @@
       </div>
     </div>
   </section>
+
+  <section class="py-16 sm:py-24 lg:py-28 bg-brand-50 font-sans">
+    <div class="container mx-auto px-4">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="order-2 lg:order-1 animate-on-scroll animate-left">
+          <span class="text-brand-700 font-[900] uppercase tracking-[0.3em] text-[11px] sm:text-[12px] mb-4 block">Équipements de santé</span>
+          <h2 class="text-[28px] sm:text-[40px] lg:text-[44px] font-[900] text-[#1a1a1b] leading-[1.05] tracking-tighter uppercase mb-5">
+            Fourniture de matériel biomédical
+          </h2>
+          <p class="text-gray-500 text-[15px] sm:text-[16px] leading-relaxed font-medium">
+            Nous aussi sommes dans la fourniture, l’installation et la maintenance des équipements biomédicaux.
+          </p>
+        </div>
+        <div class="order-1 lg:order-2 rounded-[2px] overflow-hidden shadow-2xl animate-on-scroll animate-right delay-200">
+          <img
+            :src="oxynovaContent.images.maintenance"
+            alt="Fourniture et maintenance d’équipements biomédicaux — OXYNOVA RDC"
+            class="w-full h-[320px] sm:h-[420px] object-cover object-center"
+          >
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">

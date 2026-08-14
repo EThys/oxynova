@@ -15,5 +15,21 @@ export default defineEventHandler(async (event) => {
 
   const updated = await updateMessage(id, patch)
   if (!updated) throw createError({ statusCode: 404, statusMessage: 'Message introuvable.' })
+
+  if (body.read === true) {
+    await appendAuditLog(event, {
+      action: 'mail_mark_read',
+      success: true,
+      detail: `Message ${id}`,
+    })
+  }
+  else if (body.read === false) {
+    await appendAuditLog(event, {
+      action: 'mail_mark_unread',
+      success: true,
+      detail: `Message ${id}`,
+    })
+  }
+
   return updated
 })

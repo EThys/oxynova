@@ -29,6 +29,7 @@ export function useOrganizationSchema() {
         '@type': 'PostalAddress',
         streetAddress: oxynovaContent.contact.address,
         addressLocality: 'Kinshasa',
+        addressRegion: 'Gombe',
         addressCountry: 'CD',
       },
       areaServed: [
@@ -46,7 +47,7 @@ export function useOrganizationSchema() {
         {
           '@type': 'ContactPoint',
           telephone: oxynovaContent.contact.phoneAlt,
-          contactType: 'sales',
+          contactType: 'customer support',
           availableLanguage: ['French'],
           areaServed: 'CD',
         },

@@ -65,6 +65,14 @@ export default defineEventHandler(async (event) => {
     replyStatus: sendEmail ? 'sent' : 'draft',
   })
 
+  if (sendEmail) {
+    await appendAuditLog(event, {
+      action: 'mail_compose',
+      success: true,
+      detail: `Envoyé → ${to} | ${subject}`,
+    })
+  }
+
   return {
     message: updated || saved,
     mailSent: sendEmail,

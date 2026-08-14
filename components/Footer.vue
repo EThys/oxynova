@@ -38,10 +38,17 @@
               <a :href="`mailto:${oxynovaContent.contact.email}`" class="text-brand-700 font-bold hover:underline">{{ oxynovaContent.contact.email }}</a>
             </li>
             <li>
+              Appels :
               <a :href="`tel:${oxynovaContent.contact.phone.replace(/\s/g, '')}`" class="text-brand-700 font-bold hover:underline">{{ oxynovaContent.contact.phone }}</a>
             </li>
             <li>
-              <a :href="`tel:${oxynovaContent.contact.phoneAlt.replace(/\s/g, '')}`" class="text-brand-700 font-bold hover:underline">{{ oxynovaContent.contact.phoneAlt }}</a>
+              WhatsApp :
+              <a
+                :href="`https://wa.me/${oxynovaContent.contact.whatsapp}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-brand-700 font-bold hover:underline"
+              >{{ oxynovaContent.contact.phoneAlt }}</a>
             </li>
           </ul>
         </div>
@@ -61,9 +68,11 @@
         </div>
       </div>
 
-      <div class="border-t border-gray-100 pt-8 pb-2 pr-16 sm:pr-20 flex flex-col md:flex-row justify-between items-center text-gray-400 text-[11px] sm:text-[13px] font-bold uppercase tracking-widest gap-3 text-center md:text-left">
-        <p>&copy; {{ new Date().getFullYear() }} OXYNOVA RDC SARL. Tous droits réservés.</p>
-        <p>
+      <div class="border-t border-gray-100 pt-8 pb-24 sm:pb-20 md:pb-8 flex flex-col md:flex-row justify-center md:justify-between items-center text-gray-400 text-[11px] sm:text-[13px] font-bold uppercase tracking-widest gap-3 text-center md:text-left">
+        <p class="w-full md:w-auto px-2 leading-relaxed">
+          &copy; {{ new Date().getFullYear() }} OXYNOVA RDC SARL. Tous droits réservés.
+        </p>
+        <p class="w-full md:w-auto px-2">
           Développé par
           <a
             href="https://ethberg-muzola.vercel.app/"
